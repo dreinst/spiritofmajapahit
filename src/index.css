@@ -1,0 +1,9 @@
+html,
+body {
+  margin: 0;
+  background: #05070a;
+}
+
+.shader-frame {
+  height: 100dvh;
+}

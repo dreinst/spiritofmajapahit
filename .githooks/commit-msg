@@ -1,0 +1,6 @@
+#!/bin/sh
+# Buang trailer Co-Authored-By dari pesan commit supaya author tetap hanya dreinst.
+msg="$1"
+if grep -qi '^co-authored-by:' "$msg"; then
+  grep -vi '^co-authored-by:' "$msg" > "$msg.tmp" && mv "$msg.tmp" "$msg"
+fi
