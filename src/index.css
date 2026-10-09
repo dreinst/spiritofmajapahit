@@ -34,3 +34,12 @@ body {
   height: 18px;
   width: auto;
 }
+
+.kredit a {
+  color: inherit;
+  text-decoration: none;
+}
+
+.kredit a:hover {
+  text-decoration: underline;
+}
