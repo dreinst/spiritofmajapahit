@@ -7,3 +7,30 @@ body {
 .shader-frame {
   height: 100dvh;
 }
+
+.kredit {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  gap: 14px;
+  padding: 22px 16px 26px;
+  font: 12px/1.4 system-ui, sans-serif;
+  color: rgba(223, 231, 224, 0.6);
+}
+
+.kredit-garis {
+  width: 1px;
+  height: 14px;
+  background: rgba(223, 231, 224, 0.25);
+}
+
+.kredit-oleh {
+  display: inline-flex;
+  align-items: center;
+  gap: 9px;
+}
+
+.kredit-oleh img {
+  height: 18px;
+  width: auto;
+}
