@@ -5,7 +5,12 @@ export default function App() {
     <>
       <Scene />
       <footer className="kredit">
-        <span>Made by dreinst</span>
+        <span>
+          Made by{" "}
+          <a href="https://www.instagram.com/dreiinst/" target="_blank" rel="noopener noreferrer">
+            dreinst
+          </a>
+        </span>
         <span className="kredit-garis" aria-hidden="true" />
         <span className="kredit-oleh">
           Organized by <img src="/logo-dpro-ringkas.svg" alt="D'PRO" />
