@@ -1,0 +1,116 @@
+generator client {
+  provider = "prisma-client-js"
+}
+
+datasource db {
+  provider = "postgresql"
+}
+
+// Pengaturan yang bisa diubah panitia dari panel (kategori, harga, kuota, kamar, merchandise, rekening).
+model Setting {
+  key   String @id
+  value String
+}
+
+// Satu pesanan = satu tagihan: satu atau beberapa pelari, ditambah add on kamar dan merchandise.
+model Registration {
+  id            String        @id @default(cuid())
+  code          String        @unique
+  buyerName     String
+  buyerPhone    String
+  buyerEmail    String
+  amountTicket  Int           @default(0)
+  amountAddon   Int           @default(0)
+  total         Int
+  fee           Int           @default(0) // biaya layanan QRIS penutup MDR GoPay (lib/fee.ts)
+  uniqueCode    Int           @default(0) // Rp 1.000 sampai 2.999, supaya nominal QRIS mudah dicocokkan
+  method        String // ONLINE | MANUAL
+  status        String        @default("PENDING") // PENDING | VERIFY | PAID | EXPIRED | REJECTED
+  snapToken     String?
+  snapRedirect  String?
+  proof         String?
+  proofAt       DateTime?
+  rejectReason  String?
+  paidAt        DateTime?
+  paidVia       String?
+  expiresAt     DateTime
+  createdAt     DateTime      @default(now())
+  updatedAt     DateTime      @updatedAt
+  participants  Participant[]
+  items         OrderItem[]
+
+  @@index([status])
+}
+
+model Participant {
+  id             String       @id @default(cuid())
+  ticketCode     String       @unique
+  registrationId String
+  registration   Registration @relation(fields: [registrationId], references: [id], onDelete: Cascade)
+  category       String // id kategori saat daftar
+  categoryName   String // nama kategori disalin supaya tetap terbaca kalau kategori diubah
+  price          Int
+  name           String
+  nik            String
+  gender         String // L | P
+  birthDate      String // YYYY-MM-DD
+  blood          String
+  phone          String
+  email          String
+  city           String
+  emergencyName  String
+  emergencyPhone String
+  medical        String?
+  jersey         String
+  bib            Int?
+  ticketSentAt   DateTime?
+  racepackAt     DateTime?
+  startAt        DateTime?
+  finishAt       DateTime?
+  createdAt      DateTime     @default(now())
+
+  @@index([registrationId])
+  @@index([category])
+}
+
+// Add on: kamar Aone Trawas atau merchandise. Nama dan harga disalin saat pesan.
+model OrderItem {
+  id             String       @id @default(cuid())
+  registrationId String
+  registration   Registration @relation(fields: [registrationId], references: [id], onDelete: Cascade)
+  kind           String // KAMAR | MERCH
+  ref            String // id kamar atau produk di pengaturan
+  name           String
+  variant        String? // ukuran merchandise
+  qty            Int
+  nights         Int          @default(1)
+  price          Int // harga satuan (kamar: per malam)
+  subtotal       Int
+  pickedAt       DateTime?
+
+  @@index([registrationId])
+}
+
+// Akun panitia, pola KUWERA/BMPD (scrypt, kunci setelah salah berulang, versi sesi).
+model AdminUser {
+  id             String    @id @default(cuid())
+  username       String    @unique
+  role           String // superadmin | admin | petugas
+  passwordHash   String?
+  failedLogins   Int       @default(0)
+  lockedUntil    DateTime?
+  sessionVersion Int       @default(0)
+  lastLoginAt    DateTime?
+  createdAt      DateTime  @default(now())
+}
+
+model AdminLog {
+  id        String   @id @default(cuid())
+  username  String
+  action    String
+  target    String?
+  ip        String?
+  createdAt DateTime @default(now())
+
+  @@index([createdAt])
+}
