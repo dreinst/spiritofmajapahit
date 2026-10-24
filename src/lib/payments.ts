@@ -2,9 +2,12 @@ import { prisma } from "@/lib/db";
 import { button, esc, mailLayout, sendMail, siteUrl } from "@/lib/mail";
 import { rupiah } from "@/lib/format";
 import { itemLabel } from "@/lib/regs";
+import { bentrokKedaluwarsa } from "@/lib/registration";
 
 // Menandai lunas sekali saja (idempoten), lalu mengirim e-ticket ke tiap pelari.
 export async function markPaid(code: string, via: string) {
+  // Pesanan kedaluwarsa hanya boleh lunas kalau slot dan NIK-nya belum dipakai pesanan lain.
+  if (await bentrokKedaluwarsa(code)) return false;
   const updated = await prisma.registration.updateMany({
     where: { code, status: { in: ["PENDING", "VERIFY", "EXPIRED"] } },
     data: { status: "PAID", paidAt: new Date(), paidVia: via, rejectReason: null },

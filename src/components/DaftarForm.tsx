@@ -30,7 +30,8 @@ export default function DaftarForm({ settings: s, sisa, qrisOnly }: { settings: 
   const router = useRouter();
   const query = useSearchParams();
   const [step, setStep] = useState(1);
-  const [rs, setRs] = useState<R[]>([emptyR(s.kategori[0]?.id)]);
+  const firstOpen = s.kategori.find((k) => (sisa[k.id] ?? 0) > 0)?.id ?? "";
+  const [rs, setRs] = useState<R[]>([emptyR(firstOpen)]);
   const [active, setActive] = useState(0);
   const [rooms, setRooms] = useState<Record<string, { qty: number; nights: number }>>({});
   const [merch, setMerch] = useState<Record<string, number>>({});
@@ -49,10 +50,10 @@ export default function DaftarForm({ settings: s, sisa, qrisOnly }: { settings: 
       if (d && Date.now() - d.t < 864e5) { setRs(d.rs); setRooms(d.rooms); setMerch(d.merch); setBuyerSame(d.buyerSame); setBuyer(d.buyer); }
     } catch {}
     const k = query.get("k");
-    if (k && s.kategori.some((x) => x.id === k)) setRs((a) => a.map((r, i) => (i === 0 ? { ...r, category: k } : r)));
+    if (k && s.kategori.some((x) => x.id === k) && (sisa[k] ?? 0) > 0) setRs((a) => a.map((r, i) => (i === 0 ? { ...r, category: k } : r)));
     setLoaded(true);
-  }, [query, s.kategori]);
-  useEffect(() => { if (loaded) localStorage.setItem(KEY, JSON.stringify({ t: Date.now(), rs, rooms, merch, buyerSame, buyer })); }, [loaded, rs, rooms, merch, buyerSame, buyer]);
+  }, [query, s.kategori, sisa]);
+  useEffect(() => { if (loaded) localStorage.setItem(KEY, JSON.stringify({ t: Date.now(), rs: rs.map((r) => ({ ...r, nik: "", medical: "" })), rooms, merch, buyerSame, buyer })); }, [loaded, rs, rooms, merch, buyerSame, buyer]);
 
   const setR = (i: number, patch: Partial<R>) => setRs((all) => all.map((r, j) => (j === i ? { ...r, ...patch } : r)));
   const kat = (id: string) => s.kategori.find((k) => k.id === id);
@@ -154,21 +155,21 @@ export default function DaftarForm({ settings: s, sisa, qrisOnly }: { settings: 
                     <h2 style={{ fontSize: 30 }}>Data diri</h2>
                     <p className="muted small" style={{ marginTop: 4 }}>Isi sesuai KTP. Data ini dicocokkan saat pengambilan racepack.</p>
                     <div className="grid2" style={{ gap: 12, marginTop: 16 }}>
-                      <div className="field"><label>Nama lengkap</label><input className="input" value={r.name} onChange={(e) => setR(ai, { name: e.target.value })} autoComplete={ai === 0 ? "name" : "off"} maxLength={80} /></div>
-                      <div className="field"><label>NIK (16 digit)</label><input className="input" inputMode="numeric" value={r.nik} onChange={(e) => setR(ai, { nik: e.target.value.replace(/\D/g, "").slice(0, 16) })} /></div>
-                      <div className="field"><span className="lbl">Jenis kelamin</span><div className="seg">{([["L", "Laki-laki"], ["P", "Perempuan"]] as const).map(([v, l]) => <button type="button" key={v} className={r.gender === v ? "on" : ""} onClick={() => setR(ai, { gender: v })}>{l}</button>)}</div></div>
-                      <div className="field"><label>Tanggal lahir</label><input className="input" type="date" value={r.birthDate} max="2012-06-27" onChange={(e) => setR(ai, { birthDate: e.target.value })} /></div>
-                      <div className="field"><label>Golongan darah</label><select className="input" value={r.blood} onChange={(e) => setR(ai, { blood: e.target.value })}><option value="">Pilih</option>{GOLDAR.map((g) => <option key={g} value={g}>{g}</option>)}</select></div>
-                      <div className="field"><label>Kota domisili</label><input className="input" value={r.city} onChange={(e) => setR(ai, { city: e.target.value })} autoComplete={ai === 0 ? "address-level2" : "off"} maxLength={60} /></div>
-                      <div className="field"><label>WhatsApp</label><input className="input" inputMode="tel" value={r.phone} onChange={(e) => setR(ai, { phone: e.target.value })} placeholder="08xxxxxxxxxx" autoComplete={ai === 0 ? "tel" : "off"} /></div>
-                      <div className="field"><label>Email</label><input className="input" type="email" value={r.email} onChange={(e) => setR(ai, { email: e.target.value })} autoComplete={ai === 0 ? "email" : "off"} /><span className="hint">E-ticket dikirim ke email ini.</span></div>
+                      <label className="field"><span className="lbl">Nama lengkap</span><input className="input" value={r.name} onChange={(e) => setR(ai, { name: e.target.value })} autoComplete={ai === 0 ? "name" : "off"} maxLength={80} /></label>
+                      <label className="field"><span className="lbl">NIK (16 digit)</span><input className="input" inputMode="numeric" value={r.nik} onChange={(e) => setR(ai, { nik: e.target.value.replace(/\D/g, "").slice(0, 16) })} /></label>
+                      <div className="field"><span className="lbl" id={`jk-${ai}`}>Jenis kelamin</span><div className="seg" role="radiogroup" aria-labelledby={`jk-${ai}`}>{([["L", "Laki-laki"], ["P", "Perempuan"]] as const).map(([v, l]) => <button type="button" key={v} role="radio" aria-checked={r.gender === v} className={r.gender === v ? "on" : ""} onClick={() => setR(ai, { gender: v })}>{l}</button>)}</div></div>
+                      <label className="field"><span className="lbl">Tanggal lahir</span><input className="input" type="date" value={r.birthDate} max="2012-06-27" onChange={(e) => setR(ai, { birthDate: e.target.value })} /></label>
+                      <label className="field"><span className="lbl">Golongan darah</span><select className="input" value={r.blood} onChange={(e) => setR(ai, { blood: e.target.value })}><option value="">Pilih</option>{GOLDAR.map((g) => <option key={g} value={g}>{g}</option>)}</select></label>
+                      <label className="field"><span className="lbl">Kota domisili</span><input className="input" value={r.city} onChange={(e) => setR(ai, { city: e.target.value })} autoComplete={ai === 0 ? "address-level2" : "off"} maxLength={60} /></label>
+                      <label className="field"><span className="lbl">WhatsApp</span><input className="input" inputMode="tel" value={r.phone} onChange={(e) => setR(ai, { phone: e.target.value })} placeholder="08xxxxxxxxxx" autoComplete={ai === 0 ? "tel" : "off"} /></label>
+                      <label className="field"><span className="lbl">Email</span><input className="input" type="email" value={r.email} onChange={(e) => setR(ai, { email: e.target.value })} autoComplete={ai === 0 ? "email" : "off"} /><span className="hint">E-ticket dikirim ke email ini.</span></label>
                     </div>
                     <h3 style={{ fontSize: 18, marginTop: 24 }}>Kontak darurat</h3>
                     <div className="grid2" style={{ gap: 12, marginTop: 10 }}>
-                      <div className="field"><label>Nama</label><input className="input" value={r.emergencyName} onChange={(e) => setR(ai, { emergencyName: e.target.value })} maxLength={80} /></div>
-                      <div className="field"><label>Nomor HP</label><input className="input" inputMode="tel" value={r.emergencyPhone} onChange={(e) => setR(ai, { emergencyPhone: e.target.value })} placeholder="08xxxxxxxxxx" /></div>
+                      <label className="field"><span className="lbl">Nama</span><input className="input" value={r.emergencyName} onChange={(e) => setR(ai, { emergencyName: e.target.value })} maxLength={80} /></label>
+                      <label className="field"><span className="lbl">Nomor HP</span><input className="input" inputMode="tel" value={r.emergencyPhone} onChange={(e) => setR(ai, { emergencyPhone: e.target.value })} placeholder="08xxxxxxxxxx" /></label>
                     </div>
-                    <div className="field" style={{ marginTop: 12 }}><label>Riwayat penyakit dalam 6 bulan terakhir (opsional)</label><textarea className="input" value={r.medical} onChange={(e) => setR(ai, { medical: e.target.value.slice(0, 200) })} placeholder="Kosongkan kalau tidak ada" /></div>
+                    <label className="field" style={{ marginTop: 12 }}><span className="lbl">Riwayat penyakit dalam 6 bulan terakhir (opsional)</span><textarea className="input" value={r.medical} onChange={(e) => setR(ai, { medical: e.target.value.slice(0, 200) })} placeholder="Kosongkan kalau tidak ada" /></label>
                   </div>
                 </div>
                 <div className="card sticky" style={{ padding: 26 }}>
@@ -236,9 +237,9 @@ export default function DaftarForm({ settings: s, sisa, qrisOnly }: { settings: 
                 <label className="row" style={{ marginTop: 10, cursor: "pointer", fontSize: 14 }}><input type="checkbox" checked={buyerSame} onChange={(e) => setBuyerSame(e.target.checked)} style={{ width: 20, height: 20, accentColor: "var(--bata)" }} />Pemesan adalah pelari 1 ({rs[0].name || "belum diisi"})</label>
                 {!buyerSame && (
                   <div className="grid3" style={{ marginTop: 14 }}>
-                    <div className="field"><label>Nama</label><input className="input" value={buyer.name} onChange={(e) => setBuyer({ ...buyer, name: e.target.value })} autoComplete="name" /></div>
-                    <div className="field"><label>WhatsApp</label><input className="input" inputMode="tel" value={buyer.phone} onChange={(e) => setBuyer({ ...buyer, phone: e.target.value })} placeholder="08xxxxxxxxxx" autoComplete="tel" /></div>
-                    <div className="field"><label>Email</label><input className="input" type="email" value={buyer.email} onChange={(e) => setBuyer({ ...buyer, email: e.target.value })} autoComplete="email" /></div>
+                    <label className="field"><span className="lbl">Nama</span><input className="input" value={buyer.name} onChange={(e) => setBuyer({ ...buyer, name: e.target.value })} autoComplete="name" /></label>
+                    <label className="field"><span className="lbl">WhatsApp</span><input className="input" inputMode="tel" value={buyer.phone} onChange={(e) => setBuyer({ ...buyer, phone: e.target.value })} placeholder="08xxxxxxxxxx" autoComplete="tel" /></label>
+                    <label className="field"><span className="lbl">Email</span><input className="input" type="email" value={buyer.email} onChange={(e) => setBuyer({ ...buyer, email: e.target.value })} autoComplete="email" /></label>
                   </div>
                 )}
                 <h2 style={{ fontSize: 30, marginTop: 26 }}>Metode pembayaran</h2>

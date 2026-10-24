@@ -2,7 +2,7 @@ import { requireAdmin, SUPER } from "@/lib/admin-auth";
 import { getSettings } from "@/lib/settings";
 import { saveSettingsAction } from "../../actions";
 
-const f = (label: string, el: React.ReactNode, style?: React.CSSProperties) => <div className="field" style={style}><label>{label}</label>{el}</div>;
+const f = (label: string, el: React.ReactNode, style?: React.CSSProperties) => <label className="field" style={style}><span className="lbl">{label}</span>{el}</label>;
 
 export default async function Pengaturan({ searchParams }: { searchParams: Promise<{ ok?: string }> }) {
   await requireAdmin(SUPER);

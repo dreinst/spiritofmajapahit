@@ -1,6 +1,7 @@
 import { NextResponse } from "next/server";
 import { ORDER_RE } from "@/lib/codes";
 import { prisma } from "@/lib/db";
+import { bentrokKedaluwarsa } from "@/lib/registration";
 import { clientIp, guessBlocked, limited, recordMiss } from "@/lib/rate-limit";
 
 const MAX = 3 * 1024 * 1024;
@@ -28,6 +29,8 @@ export async function POST(req: Request, ctx: { params: Promise<{ code: string }
   const buf = Buffer.from(await file.arrayBuffer());
   const type = SIG.find(([, test]) => test(buf))?.[0];
   if (!type) return NextResponse.json({ error: "Format harus JPG, PNG, WEBP, atau PDF" }, { status: 415 });
+  const bentrok = await bentrokKedaluwarsa(code);
+  if (bentrok) return NextResponse.json({ error: `Batas bayar pesanan ini sudah lewat. ${bentrok}. Hubungi panitia lewat WhatsApp ya, kami bantu.` }, { status: 409 });
   const r = await prisma.registration.updateMany({ where: { code, status: { in: ["PENDING", "REJECTED", "EXPIRED"] } }, data: { proof: `data:${type};base64,${buf.toString("base64")}`, proofAt: new Date(), status: "VERIFY", method: "MANUAL" } });
   if (r.count === 0) recordMiss(ip);
   if (r.count === 0) return NextResponse.json({ error: "Tagihan tidak ditemukan atau telah lunas" }, { status: 400 });

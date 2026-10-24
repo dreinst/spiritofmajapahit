@@ -5,7 +5,7 @@ import { rupiah, wib } from "@/lib/format";
 import { STATUS } from "@/lib/regs";
 import { approve, cancelBill, resend } from "../../actions";
 
-export default async function Pembayaran({ searchParams }: { searchParams: Promise<{ status?: string }> }) {
+export default async function Pembayaran({ searchParams }: { searchParams: Promise<{ status?: string; gagal?: string }> }) {
   await requireAdmin(FINANCE);
   const sp = await searchParams;
   const status = Object.keys(STATUS).includes(sp.status ?? "") ? sp.status! : "";
@@ -14,6 +14,7 @@ export default async function Pembayaran({ searchParams }: { searchParams: Promi
   return (
     <>
       <p className="eb">Pembayaran</p><h1 style={{ marginTop: 10 }}>Semua <span className="it">tagihan.</span> <span className="muted" style={{ fontSize: 28 }}>{regs.length}</span></h1>
+      {sp.gagal && <p className="note" role="alert" style={{ marginTop: 16 }}>Tidak bisa ditandai lunas: {sp.gagal.slice(0, 160)}. Hubungi pemesan untuk refund atau pindah kategori.</p>}
       <div className="row" style={{ margin: "20px 0" }}>{chip("", "Semua")}{chip("PENDING", "Menunggu")}{chip("VERIFY", "Cek bayar")}{chip("PAID", "Lunas")}{chip("EXPIRED", "Kedaluwarsa")}{chip("REJECTED", "Ditolak")}</div>
       <div className="card tablewrap"><table>
         <thead><tr><th>Tagihan</th><th>Pemesan</th><th>Isi</th><th>Metode</th><th>Total</th><th>Status</th><th></th></tr></thead>

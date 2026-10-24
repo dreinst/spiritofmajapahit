@@ -1,4 +1,7 @@
 import { z } from "zod";
+
+// Pesan galat bawaan zod dalam Bahasa Indonesia.
+z.config(z.locales.id());
 import { randomInt } from "node:crypto";
 import type { Prisma } from "@prisma/client";
 import { prisma } from "@/lib/db";
@@ -8,17 +11,17 @@ import { paymentMode } from "@/lib/midtrans";
 import { getSettings, terpakai, type Settings } from "@/lib/settings";
 import { biayaQris } from "@/lib/fee";
 
-const phone = z.string().trim().transform((v) => v.replace(/[\s-]/g, "")).pipe(z.string().regex(/^(\+?62|0)8\d{7,12}$/, "Nomor WhatsApp tidak valid"));
+// Nomor disimpan dalam bentuk 08..., jadi +62 dan 62 di depan diganti 0.
+const phone = z.string().trim().transform((v) => v.replace(/[\s-]/g, "")).pipe(z.string().regex(/^(\+?62|0)8\d{7,12}$/, "Nomor WhatsApp tidak valid")).transform((v) => v.replace(/^\+?62/, "0"));
 const email = z.string().trim().toLowerCase().email("Email tidak valid").max(120);
 const name = z.string().trim().min(2, "Nama terlalu pendek").max(80).regex(/^[^<>{}]*$/, "Nama mengandung karakter tidak valid");
 const text = (max: number) => z.string().trim().max(max).regex(/^[^<>{}]*$/, "Isian mengandung karakter tidak valid");
 
 // Usia minimal 15 tahun di hari lomba (27 Juni 2027), sama dengan ketentuan umum lomba lari.
-const HARI_H = new Date("2027-06-27T00:00:00+07:00");
 const cukupUmur = (d: string) => {
-  const lahir = new Date(`${d}T00:00:00+07:00`);
-  if (Number.isNaN(lahir.getTime())) return false;
-  const min = new Date(HARI_H); min.setFullYear(min.getFullYear() - 15);
+  const lahir = new Date(`${d}T00:00:00Z`);
+  if (Number.isNaN(lahir.getTime()) || lahir.toISOString().slice(0, 10) !== d) return false;
+  const min = new Date("2012-06-27T00:00:00Z");
   return lahir <= min && lahir.getFullYear() >= 1930;
 };
 
@@ -99,7 +102,7 @@ export async function createOrder(input: OrderInput) {
       if (n && (used[k.id] ?? 0) + n > k.kuota) throw new Error(`Kuota ${k.nama} ${k.jarak} sudah penuh`);
     }
     const dobel = await tx.participant.findFirst({ where: { nik: { in: niks }, registration: { OR: [{ status: { in: ["PAID", "VERIFY"] } }, { status: "PENDING", expiresAt: { gt: new Date() } }] } }, select: { nik: true } });
-    if (dobel) throw new Error(`NIK ${dobel.nik} sudah terdaftar. Cek tiket lewat menu Cek tiket, atau hubungi panitia`);
+    if (dobel) throw new Error("Salah satu NIK sudah punya pendaftaran aktif. Cek email Anda atau menu Cek tiket, atau hubungi panitia");
     const f = manual ? biayaQris(q.total, s) : 0;
     const u = manual ? await pickUniqueCode(q.total + f, tx) : 0;
     return tx.registration.create({
@@ -119,4 +122,21 @@ export async function createOrder(input: OrderInput) {
     });
   });
   return { code: reg.code };
+}
+
+// Pesanan kedaluwarsa yang dibayar belakangan: slot dan NIK-nya mungkin sudah dipakai pesanan lain.
+// Dipanggil sebelum EXPIRED naik ke VERIFY atau PAID; mengembalikan alasan bentrok, atau null kalau aman.
+export async function bentrokKedaluwarsa(code: string) {
+  const reg = await prisma.registration.findUnique({ where: { code }, include: { participants: true } });
+  // Termasuk PENDING/REJECTED yang batas bayarnya lewat tapi belum ditandai EXPIRED (status diperbarui saat halaman dibuka).
+  if (!reg || !["PENDING", "EXPIRED", "REJECTED"].includes(reg.status) || reg.expiresAt > new Date()) return null;
+  const aktif = { OR: [{ status: { in: ["PAID", "VERIFY"] } }, { status: "PENDING", expiresAt: { gt: new Date() } }] };
+  const dobel = await prisma.participant.findFirst({ where: { nik: { in: reg.participants.map((p) => p.nik) }, registration: { ...aktif, id: { not: reg.id } } }, select: { name: true } });
+  if (dobel) return "NIK salah satu pelari sudah punya pendaftaran aktif lain";
+  const [s, used] = await Promise.all([getSettings(), terpakai()]);
+  for (const k of s.kategori) {
+    const n = reg.participants.filter((p) => p.category === k.id).length;
+    if (n && (used[k.id] ?? 0) + n > k.kuota) return `Kuota ${k.nama} ${k.jarak} sudah penuh`;
+  }
+  return null;
 }

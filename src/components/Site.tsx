@@ -6,7 +6,7 @@ import Icon, { WaIcon } from "@/components/Icon";
 import { Surya } from "@/components/Brand";
 import { EMAIL, mailLink, waLink } from "@/lib/kontak";
 
-const LINKS: [string, string][] = [["/#kategori", "Kategori"], ["/#lintasan", "Lintasan"], ["/#medali", "Medali"], ["/#addon", "Add on"], ["/#jadwal", "Jadwal"]];
+const LINKS: [string, string][] = [["/acara#kategori", "Kategori"], ["/acara#lintasan", "Lintasan"], ["/acara#medali", "Medali"], ["/acara#addon", "Add on"], ["/acara#jadwal", "Jadwal"]];
 
 export function Logo() {
   return (
@@ -69,7 +69,7 @@ export function Footer() {
           <p style={{ marginTop: 14, maxWidth: 360 }}>Minggu, 27 Juni 2027 di Aone Trawas, kaki Gunung Penanggungan, Mojokerto. Bagian dari rangkaian The Spirit of Majapahit.</p>
         </div>
         <div><h4>Acara</h4>{LINKS.map(([h, l]) => <Link key={h} href={h}>{l}</Link>)}</div>
-        <div><h4>Peserta</h4><Link href="/daftar">Daftar</Link><Link href="/cek-tiket">Cek tiket</Link><Link href="/#faq">Tanya jawab</Link></div>
+        <div><h4>Peserta</h4><Link href="/daftar">Daftar</Link><Link href="/cek-tiket">Cek tiket</Link><Link href="/acara#faq">Tanya jawab</Link></div>
         <div><h4>Kontak</h4><a href={waLink()} target="_blank" rel="noopener" className="ic"><WaIcon size={16} />WhatsApp</a><a href={mailLink()} title={EMAIL}>{EMAIL}</a></div>
       </div>
       <div className="bot">

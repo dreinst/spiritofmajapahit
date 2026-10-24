@@ -7,6 +7,7 @@ import { button, mailLayout, sendMail, siteUrl } from "@/lib/mail";
 import { markPaid, sendTickets } from "@/lib/payments";
 import { clientIp, limited, note, recent } from "@/lib/rate-limit";
 import { saveSettings } from "@/lib/settings";
+import { bentrokKedaluwarsa } from "@/lib/registration";
 import { headers } from "next/headers";
 
 export async function loginAction(_: unknown, form: FormData) {
@@ -36,6 +37,8 @@ const code = (form: FormData) => String(form.get("code") ?? "").slice(0, 20);
 export async function approve(form: FormData) {
   const a = await requireAdmin(FINANCE);
   const c = code(form);
+  const bentrok = await bentrokKedaluwarsa(c);
+  if (bentrok) redirect(`/mjpadmin/pembayaran?gagal=${encodeURIComponent(`${c}: ${bentrok}`)}`);
   if (await markPaid(c, `transfer manual (${a.username})`)) await logAdmin(a.username, "setujui_transfer", c);
   revalidatePath("/mjpadmin", "layout");
 }

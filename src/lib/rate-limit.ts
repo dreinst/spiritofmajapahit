@@ -30,7 +30,7 @@ export function note(key: string) {
 }
 
 // Tebakan kode tagihan/tiket: yang dihitung hanya kode yang tidak ada, jadi pemilik asli tidak ikut terbatasi.
-const MISS_MAX = 20, MISS_WINDOW = 10 * 60_000;
+const MISS_MAX = 60, MISS_WINDOW = 10 * 60_000;
 export const guessBlocked = (ip: string) => recent(`miss:${ip}`, MISS_WINDOW) >= MISS_MAX;
 export const recordMiss = (ip: string) => note(`miss:${ip}`);
 

@@ -26,6 +26,8 @@ function csp(nonce: string) {
 
 export function proxy(req: NextRequest) {
   const p = req.nextUrl.pathname;
+  // Beranda 3D memakai CSP sendiri dari next.config.ts (skrip inline dan WebAssembly decoder Draco).
+  if (p === "/") return NextResponse.next();
   const nonce = btoa(crypto.randomUUID());
   const policy = csp(nonce);
   const reqHeaders = new Headers(req.headers);
@@ -53,6 +55,6 @@ export const config = {
   matcher: [
     "/mjpadmin", "/mjpadmin/:path*", "/api/mjpadmin/:path*",
     // Semua halaman, kecuali API publik, aset statis, dan prefetch.
-    { source: "/((?!api|_next/static|_next/image|foto|brand|texture|favicon|icon|apple-icon|robots.txt|sitemap.xml).*)", missing: [{ type: "header", key: "next-router-prefetch" }, { type: "header", key: "purpose", value: "prefetch" }] },
+    { source: "/((?!api|_next/static|_next/image|foto|brand|texture|spirit|favicon|icon|apple-icon|robots.txt|sitemap.xml).*)", missing: [{ type: "header", key: "next-router-prefetch" }, { type: "header", key: "purpose", value: "prefetch" }] },
   ],
 };

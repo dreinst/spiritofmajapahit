@@ -4,13 +4,14 @@ import Icon, { WaIcon } from "@/components/Icon";
 import Hitung from "@/components/Hitung";
 import SizeChart from "@/components/SizeChart";
 import Shell, { Words } from "@/components/Shell";
-import { PetaLintasan, Pegunungan, Surya } from "@/components/Brand";
+import { PetaLintasan, Surya } from "@/components/Brand";
 import { EVENT } from "@/lib/event";
 import { rupiah } from "@/lib/format";
 import { getSettings, terpakai } from "@/lib/settings";
 import { WA_TAMPIL, waLink } from "@/lib/kontak";
 
 export const dynamic = "force-dynamic";
+export const metadata = { title: "Info, kategori, dan harga", description: "Kategori dan harga, lintasan, medali, add on kamar Aone Trawas dan merchandise, jadwal, serta tanya jawab Majapahit Trail Run 2027." };
 
 const WARNA_RUTE = ["#D3A44C", "#B4472B", "#5A2C3E"];
 const IKON_MERCH = ["baju", "baju", "topi", "botol"];
@@ -35,27 +36,16 @@ export default async function Home() {
   const pita = ["Majapahit Trail Run 2027", EVENT.venue, "27 Juni 2027", "Kaki Gunung Penanggungan", "The Spirit of Majapahit"];
 
   return (
-    <Shell over>
-      <section className="hero">
-        <div className="bintang" />
-        <div className="matahari" />
-        <Pegunungan className="gunung" />
-        <Image src="/foto/gapura-pagi.webp" alt="Candi bentar dan gapura paduraksa bergaya Majapahit saat fajar" width={2400} height={1350} priority className="gapura" sizes="(max-width: 900px) 150vw, 68vw" />
-        <div className="tanah" />
-        <div className="isi">
-          <p className="eb" style={{ color: "#F3D9B0" }}>{EVENT.seri} · Trail run</p>
-          <h1 style={{ marginTop: 16 }}><Words text="Majapahit Trail Run" /><span className="it">edisi pertama 2027</span></h1>
-          <p className="lead">Lari lintas alam di kaki Gunung Penanggungan. {EVENT.tanggal} di {EVENT.venue}, Mojokerto.</p>
-          <div className="cta"><Link href="#kategori" className="btn r lg">Pilih kategori <Icon name="arrow" size={18} /></Link><Link href="#medali" className="btn g lg">Lihat medali</Link></div>
+    <Shell>
+      <section className="infohead">
+        <div className="narrow">
+          <p className="eb">{EVENT.seri} · Info lengkap</p>
+          <h1 style={{ marginTop: 14 }}>Majapahit Trail Run <span className="it">2027</span></h1>
+          <p className="lead">{EVENT.tanggal} di {EVENT.venue}, Mojokerto. Di halaman ini ada kategori dan harga, lintasan, medali, add on, jadwal, dan tanya jawab.</p>
+          <div className="row" style={{ marginTop: 24 }}><Link href="/daftar" className="btn r lg">Daftar sekarang <Icon name="arrow" size={18} /></Link><Link href="#kategori" className="btn g lg">Lihat kategori</Link></div>
+          <div className="kaki2"><p className="eb">Menuju hari lomba</p><Hitung to={EVENT.hariH} /></div>
         </div>
-        <div className="kaki"><div>
-          <div className="hit"><p className="eb">Menuju hari lomba</p><Hitung to={EVENT.hariH} /></div>
-          <div><p className="eb">Tanggal</p><b>27.06<small>2027</small></b></div>
-          <div><p className="eb">Venue</p><b>Aone<small>Trawas</small></b></div>
-          <div><p className="eb">Kategori</p><b>{jarak.length > 1 ? `${jarak[0]} · ${jarak[jarak.length - 1]}` : jarak[0]}<small>{s.kategori.length} jarak</small></b></div>
-        </div></div>
       </section>
-
       <div className="pita" aria-hidden="true">{[0, 1].map((n) => <div key={n}>{[...pita, ...pita].map((t, i) => <span key={i}>{t}<Surya size={18} /></span>)}</div>)}</div>
 
       <section className="sec" id="kategori">

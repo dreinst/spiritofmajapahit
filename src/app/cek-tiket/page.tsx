@@ -28,8 +28,9 @@ async function cari(form: FormData) {
     ];
     // Maksimal 3 email per alamat per jam, supaya kotak masuk peserta tidak bisa dibanjiri dari banyak jaringan.
     if (links.length && !limited(`cekmail:${email}`, 3, 60 * 60_000)) await sendMail(email, "Tautan e-ticket dan tagihan Majapahit Trail Run", mailLayout("Tautan e-ticket dan tagihan Anda", links.join("")));
+    redirect("/cek-tiket?m=terkirim");
   }
-  redirect("/cek-tiket?m=terkirim");
+  redirect("/cek-tiket?m=format");
 }
 
 export default async function Cek({ searchParams }: { searchParams: Promise<{ m?: string }> }) {
@@ -43,6 +44,7 @@ export default async function Cek({ searchParams }: { searchParams: Promise<{ m?
         <form action={cari} className="card rel" style={{ marginTop: 26, padding: 28 }}>
           <div className="field"><label htmlFor="q">Kode atau email</label><input id="q" name="q" className="input" required maxLength={120} autoComplete="email" /></div>
           {m === "terkirim" && <p className="note" style={{ marginTop: 14 }}>Kalau email tersebut terdaftar, tautannya sudah kami kirim. Cek juga folder spam ya.</p>}
+          {m === "format" && <p className="err" style={{ marginTop: 14 }}>Masukkan kode tiket, kode pesanan, atau email yang valid ya.</p>}
           {m === "batas" && <p className="err" style={{ marginTop: 14 }}>Terlalu banyak percobaan. Coba lagi beberapa menit lagi ya.</p>}
           <button className="btn k full lg" style={{ marginTop: 18 }}>Cari</button>
         </form>
