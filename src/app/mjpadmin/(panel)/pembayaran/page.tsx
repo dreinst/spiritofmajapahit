@@ -3,6 +3,7 @@ import { FINANCE, requireAdmin } from "@/lib/admin-auth";
 import { prisma } from "@/lib/db";
 import { rupiah, wib } from "@/lib/format";
 import { STATUS } from "@/lib/regs";
+import { isEvent, SITES } from "@/lib/sites";
 import { approve, cancelBill, resend } from "../../actions";
 
 export default async function Pembayaran({ searchParams }: { searchParams: Promise<{ status?: string; gagal?: string }> }) {
@@ -21,7 +22,7 @@ export default async function Pembayaran({ searchParams }: { searchParams: Promi
         <tbody>{regs.map((r) => (
           <tr key={r.code}>
             <td className="mono small">{r.code}<br /><span className="muted tiny">{wib(r.createdAt)}</span></td>
-            <td>{r.buyerName}<br /><span className="muted tiny">{r.buyerPhone}</span></td><td className="small">{r.participants.length} pelari{r.amountAddon > 0 && <><br /><span className="muted tiny">add on {rupiah(r.amountAddon)}</span></>}</td>
+            <td>{r.buyerName}<br /><span className="muted tiny">{r.buyerPhone}</span></td><td className="small">{SITES[isEvent(r.event) ? r.event : "trail"].singkat} · {r.participants.length} orang{r.amountAddon > 0 && <><br /><span className="muted tiny">add on {rupiah(r.amountAddon)}</span></>}</td>
             <td className="small">{r.method === "MANUAL" ? (r.uniqueCode > 0 ? "QRIS manual" : "Transfer") : "Online"}{r.paidVia && <><br /><span className="muted tiny">{r.paidVia}</span></>}</td>
             <td><b>{rupiah(r.total)}</b>{r.uniqueCode > 0 && <><br /><span className="muted tiny">{r.fee > 0 ? `layanan ${rupiah(r.fee)} · ` : ""}kode unik {r.uniqueCode}</span></>}</td><td><span className={`pill ${STATUS[r.status][0]}`}>{STATUS[r.status][1]}</span></td>
             <td>{["PENDING", "EXPIRED"].includes(r.status) && <form action={approve}><input type="hidden" name="code" value={r.code} /><button className="btn w sm">Tandai lunas</button></form>}

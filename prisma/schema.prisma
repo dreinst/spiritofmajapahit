@@ -12,10 +12,12 @@ model Setting {
   value String
 }
 
-// Satu pesanan = satu tagihan: satu atau beberapa pelari, ditambah add on kamar dan merchandise.
+// Satu pesanan = satu tagihan untuk satu acara (trail | konser | mj): pelari atau pemegang tiket,
+// ditambah add on kamar dan merchandise.
 model Registration {
   id            String        @id @default(cuid())
   code          String        @unique
+  event         String        @default("trail")
   buyerName     String
   buyerPhone    String
   buyerEmail    String
@@ -40,28 +42,30 @@ model Registration {
   items         OrderItem[]
 
   @@index([status])
+  @@index([event])
 }
 
+// Pelari trail run atau pemegang tiket konser/musical journey. Kolom data diri lengkap hanya wajib untuk trail run.
 model Participant {
   id             String       @id @default(cuid())
   ticketCode     String       @unique
   registrationId String
   registration   Registration @relation(fields: [registrationId], references: [id], onDelete: Cascade)
-  category       String // id kategori saat daftar
+  category       String // id kategori atau kelas tiket saat pesan
   categoryName   String // nama kategori disalin supaya tetap terbaca kalau kategori diubah
   price          Int
   name           String
-  nik            String
-  gender         String // L | P
-  birthDate      String // YYYY-MM-DD
-  blood          String
+  nik            String?
+  gender         String? // L | P
+  birthDate      String? // YYYY-MM-DD
+  blood          String?
   phone          String
   email          String
-  city           String
-  emergencyName  String
-  emergencyPhone String
+  city           String?
+  emergencyName  String?
+  emergencyPhone String?
   medical        String?
-  jersey         String
+  jersey         String?
   bib            Int?
   ticketSentAt   DateTime?
   racepackAt     DateTime?

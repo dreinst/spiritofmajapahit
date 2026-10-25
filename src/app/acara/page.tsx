@@ -11,7 +11,7 @@ import { getSettings, terpakai } from "@/lib/settings";
 import { WA_TAMPIL, waLink } from "@/lib/kontak";
 
 export const dynamic = "force-dynamic";
-export const metadata = { title: "Info, kategori, dan harga", description: "Kategori dan harga, lintasan, medali, add on kamar Aone Trawas dan merchandise, jadwal, serta tanya jawab Majapahit Trail Run 2027." };
+export const metadata = { title: { absolute: "Majapahit Trail Run 2027 · Aone Trawas" }, description: "Majapahit Trail Run, Minggu 27 Juni 2027 di Aone Trawas, kaki Gunung Penanggungan, Mojokerto. Kategori dan harga, lintasan, medali, add on, jadwal, serta tanya jawab." };
 
 const WARNA_RUTE = ["#D3A44C", "#B4472B", "#5A2C3E"];
 const IKON_MERCH = ["baju", "baju", "topi", "botol"];
@@ -39,9 +39,9 @@ export default async function Home() {
     <Shell>
       <section className="infohead">
         <div className="narrow">
-          <p className="eb">{EVENT.seri} · Info lengkap</p>
+          <p className="eb">{EVENT.seri} · Trail Run</p>
           <h1 style={{ marginTop: 14 }}>Majapahit Trail Run <span className="it">2027</span></h1>
-          <p className="lead">{EVENT.tanggal} di {EVENT.venue}, Mojokerto. Di halaman ini ada kategori dan harga, lintasan, medali, add on, jadwal, dan tanya jawab.</p>
+          <p className="lead">Lari lintas alam di kaki Gunung Penanggungan. {EVENT.tanggal} di {EVENT.venue}, Mojokerto.</p>
           <div className="row" style={{ marginTop: 24 }}><Link href="/daftar" className="btn r lg">Daftar sekarang <Icon name="arrow" size={18} /></Link><Link href="#kategori" className="btn g lg">Lihat kategori</Link></div>
           <div className="kaki2"><p className="eb">Menuju hari lomba</p><Hitung to={EVENT.hariH} /></div>
         </div>

@@ -91,9 +91,13 @@ export async function saveSettingsAction(form: FormData) {
     .map((r) => ({ id: r.Id || slug(r.Nama), nama: r.Nama.slice(0, 60), harga: angka(r.Harga), tamu: Math.max(1, Math.min(10, angka(r.Tamu) || 2)), ket: r.Ket.slice(0, 200) })));
   const merch = unik(rows(form, "merch", ["Nama", "Id", "Harga", "Ukuran", "Ket"]).filter((r) => r.Nama && angka(r.Harga) > 0)
     .map((r) => ({ id: r.Id || slug(r.Nama), nama: r.Nama.slice(0, 60), harga: angka(r.Harga), ukuran: r.Ukuran === "1", ket: r.Ket.slice(0, 200) })));
+  const tiket = (prefix: string, awal: string) => unik(rows(form, prefix, ["Nama", "Id", "Harga", "Kuota", "Ket"]).filter((r) => r.Nama)
+    .map((r) => ({ id: r.Id || `${awal}-${slug(r.Nama)}`, nama: r.Nama.slice(0, 40), harga: angka(r.Harga), kuota: angka(r.Kuota), ket: r.Ket.slice(0, 200) })));
   const teks = (k: string, max = 120) => String(form.get(k) ?? "").trim().slice(0, max);
   await saveSettings({
     kategori: JSON.stringify(kategori), kamar: JSON.stringify(kamar), merch: JSON.stringify(merch),
+    tiketKonser: JSON.stringify(tiket("tk", "konser")), tiketMj: JSON.stringify(tiket("tm", "mj")),
+    checkInKonser: teks("checkInKonser"), checkInMj: teks("checkInMj"),
     checkIn: teks("checkIn"), maksMalam: String(Math.max(1, Math.min(5, angka(teks("maksMalam")) || 1))),
     jadwalDaftar: teks("jadwalDaftar"), jadwalRacepack: teks("jadwalRacepack"),
     mdrPersen: String(Math.min(5, Math.max(0, Number(teks("mdrPersen").replace(",", ".")) || 0))), mdrBatas: String(angka(teks("mdrBatas"))),

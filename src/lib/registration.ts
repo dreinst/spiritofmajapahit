@@ -8,7 +8,7 @@ import { prisma } from "@/lib/db";
 import { orderCode, ticketCode } from "@/lib/codes";
 import { GOLDAR, JERSEY } from "@/lib/event";
 import { paymentMode } from "@/lib/midtrans";
-import { getSettings, terpakai, type Settings } from "@/lib/settings";
+import { getSettings, pilihanAcara, terpakai, type Settings } from "@/lib/settings";
 import { biayaQris } from "@/lib/fee";
 
 // Nomor disimpan dalam bentuk 08..., jadi +62 dan 62 di depan diganti 0.
@@ -39,33 +39,50 @@ export const runnerSchema = z.object({
   jersey: z.enum(JERSEY),
 });
 
-export const orderSchema = z.object({
-  buyer: z.object({ name, phone, email }),
-  runners: z.array(runnerSchema).min(1, "Tambahkan minimal satu pelari").max(10, "Maksimal 10 pelari per pesanan"),
+const addonSchema = {
   rooms: z.array(z.object({ id: z.string().max(40), qty: z.number().int().min(0).max(10), nights: z.number().int().min(1).max(5) })).max(10).default([]),
   merch: z.array(z.object({ id: z.string().max(40), variant: z.enum(JERSEY).optional(), qty: z.number().int().min(0).max(20) })).max(40).default([]),
   method: z.enum(["ONLINE", "MANUAL"]),
   agree: z.literal(true, { message: "Setujui syarat dan ketentuan" }),
+};
+
+// Trail run: data pelari lengkap.
+export const orderSchema = z.object({
+  buyer: z.object({ name, phone, email }),
+  runners: z.array(runnerSchema).min(1, "Tambahkan minimal satu pelari").max(10, "Maksimal 10 pelari per pesanan"),
+  ...addonSchema,
+});
+
+// Konser Majapahit dan Musical Journey: cukup kelas tiket dan nama pemegang tiket.
+export const tiketSchema = z.object({
+  event: z.enum(["konser", "mj"]),
+  buyer: z.object({ name, phone, email }),
+  tickets: z.array(z.object({ category: z.string().min(1).max(40), name })).min(1, "Pilih minimal satu tiket").max(20, "Maksimal 20 tiket per pesanan"),
+  ...addonSchema,
 });
 
 export type OrderInput = z.infer<typeof orderSchema>;
+export type TiketInput = z.infer<typeof tiketSchema>;
 type Line = { kind: "KAMAR" | "MERCH"; ref: string; name: string; variant: string | null; qty: number; nights: number; price: number; subtotal: number };
+type Addon = Pick<OrderInput, "rooms" | "merch">;
+type Orang = { category: string; name: string; phone: string; email: string; nik?: string | null; gender?: string | null; birthDate?: string | null; blood?: string | null; city?: string | null; emergencyName?: string | null; emergencyPhone?: string | null; medical?: string | null; jersey?: string | null };
 
 // Harga selalu dihitung dari pengaturan server, bukan dari browser. Item yang tidak dikenal diabaikan.
-export function quote(input: Pick<OrderInput, "runners" | "rooms" | "merch">, s: Settings) {
-  const tiket = input.runners.reduce((a, r) => a + (s.kategori.find((k) => k.id === r.category)?.harga ?? 0), 0);
+export function quote(event: string, categories: string[], addon: Addon, s: Settings) {
+  const pil = pilihanAcara(s, event);
+  const tiket = categories.reduce((a, c) => a + (pil.find((k) => k.id === c)?.harga ?? 0), 0);
   const lines: Line[] = [];
-  for (const r of input.rooms) {
+  for (const r of addon.rooms) {
     const k = s.kamar.find((x) => x.id === r.id);
     const nights = Math.min(r.nights, s.maksMalam);
     if (k && r.qty > 0) lines.push({ kind: "KAMAR", ref: k.id, name: k.nama, variant: null, qty: r.qty, nights, price: k.harga, subtotal: k.harga * r.qty * nights });
   }
-  for (const m of input.merch) {
+  for (const m of addon.merch) {
     const p = s.merch.find((x) => x.id === m.id);
     if (p && m.qty > 0 && (!p.ukuran || m.variant)) lines.push({ kind: "MERCH", ref: p.id, name: p.nama, variant: p.ukuran ? m.variant! : null, qty: m.qty, nights: 1, price: p.harga, subtotal: p.harga * m.qty });
   }
-  const addon = lines.reduce((a, l) => a + l.subtotal, 0);
-  return { tiket, addon, lines, total: tiket + addon };
+  const sub = lines.reduce((a, l) => a + l.subtotal, 0);
+  return { tiket, addon: sub, lines, total: tiket + sub };
 }
 
 const EXPIRE_MS = 24 * 60 * 60 * 1000;
@@ -81,40 +98,44 @@ async function pickUniqueCode(base: number, tx: Prisma.TransactionClient) {
     for (let c = lo; c <= hi; c++) if (!taken.has(base + c)) free.push(c);
     if (free.length) return free[randomInt(free.length)];
   }
-  throw new Error("Pendaftaran sedang ramai, silakan coba lagi beberapa menit lagi");
+  throw new Error("Pemesanan sedang ramai, silakan coba lagi beberapa menit lagi");
 }
 
-export async function createOrder(input: OrderInput) {
+const AKTIF = () => ({ OR: [{ status: { in: ["PAID", "VERIFY"] } }, { status: "PENDING", expiresAt: { gt: new Date() } }] });
+
+async function simpan(event: string, buyer: { name: string; phone: string; email: string }, orang: Orang[], addon: Addon, method: "ONLINE" | "MANUAL") {
   const s = await getSettings();
-  if (!s.dibuka) throw new Error("Pendaftaran sedang ditutup");
-  for (const r of input.runners) if (!s.kategori.some((k) => k.id === r.category)) throw new Error("Kategori tidak tersedia, silakan pilih ulang");
-  const niks = input.runners.map((r) => r.nik);
+  if (!s.dibuka) throw new Error("Pemesanan sedang ditutup");
+  const pil = pilihanAcara(s, event);
+  for (const o of orang) if (!pil.some((k) => k.id === o.category)) throw new Error("Pilihan tiket tidak tersedia, silakan pilih ulang");
+  const niks = orang.map((o) => o.nik).filter((n): n is string => !!n);
   if (new Set(niks).size !== niks.length) throw new Error("NIK yang sama tidak bisa didaftarkan dua kali");
-  const q = quote(input, s);
+  const q = quote(event, orang.map((o) => o.category), addon, s);
   const manual = paymentMode() === "manual";
 
   const reg = await prisma.$transaction(async (tx) => {
     await tx.$executeRaw`SELECT pg_advisory_xact_lock(272027)`;
-    // Kuota dan NIK dicek di dalam kunci supaya dua pendaftar tidak sama-sama mengambil slot terakhir.
+    // Kuota dan NIK dicek di dalam kunci supaya dua pemesan tidak sama-sama mengambil slot terakhir.
     const used = await terpakai();
-    for (const k of s.kategori) {
-      const n = input.runners.filter((r) => r.category === k.id).length;
-      if (n && (used[k.id] ?? 0) + n > k.kuota) throw new Error(`Kuota ${k.nama} ${k.jarak} sudah penuh`);
+    for (const k of pil) {
+      const n = orang.filter((o) => o.category === k.id).length;
+      if (n && (used[k.id] ?? 0) + n > k.kuota) throw new Error(`Kuota ${k.label} sudah penuh`);
     }
-    const dobel = await tx.participant.findFirst({ where: { nik: { in: niks }, registration: { OR: [{ status: { in: ["PAID", "VERIFY"] } }, { status: "PENDING", expiresAt: { gt: new Date() } }] } }, select: { nik: true } });
-    if (dobel) throw new Error("Salah satu NIK sudah punya pendaftaran aktif. Cek email Anda atau menu Cek tiket, atau hubungi panitia");
+    if (niks.length) {
+      const dobel = await tx.participant.findFirst({ where: { nik: { in: niks }, registration: { event, ...AKTIF() } }, select: { nik: true } });
+      if (dobel) throw new Error("Salah satu NIK sudah punya pendaftaran aktif. Cek email Anda atau menu Cek tiket, atau hubungi panitia");
+    }
     const f = manual ? biayaQris(q.total, s) : 0;
     const u = manual ? await pickUniqueCode(q.total + f, tx) : 0;
     return tx.registration.create({
       data: {
-        code: orderCode(), buyerName: input.buyer.name, buyerPhone: input.buyer.phone, buyerEmail: input.buyer.email,
+        code: orderCode(), event, buyerName: buyer.name, buyerPhone: buyer.phone, buyerEmail: buyer.email,
         amountTicket: q.tiket, amountAddon: q.addon, fee: f, uniqueCode: u, total: q.total + f + u,
-        method: manual ? "MANUAL" : input.method, expiresAt: new Date(Date.now() + EXPIRE_MS),
+        method: manual ? "MANUAL" : method, expiresAt: new Date(Date.now() + EXPIRE_MS),
         participants: {
-          create: input.runners.map((r) => {
-            const k = s.kategori.find((x) => x.id === r.category)!;
-            return { ticketCode: ticketCode(), category: k.id, categoryName: `${k.nama} ${k.jarak}`, price: k.harga, name: r.name, nik: r.nik, gender: r.gender, birthDate: r.birthDate,
-              blood: r.blood, phone: r.phone, email: r.email, city: r.city, emergencyName: r.emergencyName, emergencyPhone: r.emergencyPhone, medical: r.medical || null, jersey: r.jersey };
+          create: orang.map((o) => {
+            const k = pil.find((x) => x.id === o.category)!;
+            return { ...o, ticketCode: ticketCode(), category: k.id, categoryName: k.label, price: k.harga, medical: o.medical || null };
           }),
         },
         items: { create: q.lines },
@@ -124,19 +145,27 @@ export async function createOrder(input: OrderInput) {
   return { code: reg.code };
 }
 
+export const createOrder = (i: OrderInput) =>
+  simpan("trail", i.buyer, i.runners.map((r) => ({ ...r })), i, i.method);
+
+export const createTiketOrder = (i: TiketInput) =>
+  simpan(i.event, i.buyer, i.tickets.map((t) => ({ category: t.category, name: t.name, phone: i.buyer.phone, email: i.buyer.email })), i, i.method);
+
 // Pesanan kedaluwarsa yang dibayar belakangan: slot dan NIK-nya mungkin sudah dipakai pesanan lain.
 // Dipanggil sebelum EXPIRED naik ke VERIFY atau PAID; mengembalikan alasan bentrok, atau null kalau aman.
 export async function bentrokKedaluwarsa(code: string) {
   const reg = await prisma.registration.findUnique({ where: { code }, include: { participants: true } });
   // Termasuk PENDING/REJECTED yang batas bayarnya lewat tapi belum ditandai EXPIRED (status diperbarui saat halaman dibuka).
   if (!reg || !["PENDING", "EXPIRED", "REJECTED"].includes(reg.status) || reg.expiresAt > new Date()) return null;
-  const aktif = { OR: [{ status: { in: ["PAID", "VERIFY"] } }, { status: "PENDING", expiresAt: { gt: new Date() } }] };
-  const dobel = await prisma.participant.findFirst({ where: { nik: { in: reg.participants.map((p) => p.nik) }, registration: { ...aktif, id: { not: reg.id } } }, select: { name: true } });
-  if (dobel) return "NIK salah satu pelari sudah punya pendaftaran aktif lain";
+  const niks = reg.participants.map((p) => p.nik).filter((n): n is string => !!n);
+  if (niks.length) {
+    const dobel = await prisma.participant.findFirst({ where: { nik: { in: niks }, registration: { event: reg.event, ...AKTIF(), id: { not: reg.id } } }, select: { name: true } });
+    if (dobel) return "NIK salah satu pelari sudah punya pendaftaran aktif lain";
+  }
   const [s, used] = await Promise.all([getSettings(), terpakai()]);
-  for (const k of s.kategori) {
+  for (const k of pilihanAcara(s, reg.event)) {
     const n = reg.participants.filter((p) => p.category === k.id).length;
-    if (n && (used[k.id] ?? 0) + n > k.kuota) return `Kuota ${k.nama} ${k.jarak} sudah penuh`;
+    if (n && (used[k.id] ?? 0) + n > k.kuota) return `Kuota ${k.label} sudah penuh`;
   }
   return null;
 }

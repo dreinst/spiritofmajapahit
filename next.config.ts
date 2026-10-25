@@ -1,4 +1,14 @@
 import type { NextConfig } from "next";
+import { siteBase } from "./src/lib/sites";
+
+// Host tiap situs (produksi dan uji lokal *.localhost). Satu aplikasi melayani keempatnya.
+const H = {
+  payung: "(majapahit\\.dpro\\.events|localhost|majapahit\\.localhost)",
+  trail: "(trailrun-majapahit\\.dpro\\.events|trailrun\\.localhost)",
+  konser: "(konser-majapahit\\.dpro\\.events|konser\\.localhost)",
+  mj: "(musicaljourney-majapahit\\.dpro\\.events|musicaljourney\\.localhost)",
+};
+const di = (k: keyof typeof H) => [{ type: "host" as const, value: H[k] }];
 
 const isDev = process.env.NODE_ENV === "development";
 const midtrans = "https://app.midtrans.com https://app.sandbox.midtrans.com";
@@ -51,9 +61,39 @@ const nextConfig: NextConfig = {
   compress: false,
   images: { formats: ["image/avif", "image/webp"], qualities: [70, 75], minimumCacheTTL: 2592000, deviceSizes: [390, 640, 828, 1080, 1440, 1920], imageSizes: [64, 128, 256, 384] },
   experimental: { serverActions: { bodySizeLimit: "1mb" } },
-  // Beranda = halaman 3D statis (public/spirit/index.html); halaman info pindah ke /acara.
+  // Beranda tiap domain: payung = halaman 3D statis (public/spirit/index.html), trail = /acara,
+  // konser = /konser, musical journey = /musical-journey. /beli menuju formulir tiket acaranya.
   async rewrites() {
-    return { beforeFiles: [{ source: "/", destination: "/spirit/index.html" }] };
+    return {
+      beforeFiles: [
+        { source: "/", has: di("payung"), destination: "/spirit/index.html" },
+        { source: "/", has: di("trail"), destination: "/acara" },
+        { source: "/", has: di("konser"), destination: "/konser" },
+        { source: "/beli", has: di("konser"), destination: "/konser/beli" },
+        { source: "/", has: di("mj"), destination: "/musical-journey" },
+        { source: "/beli", has: di("mj"), destination: "/musical-journey/beli" },
+      ],
+    };
+  },
+  // Tiap halaman dibuka di domain acaranya; tautan lama (misalnya majapahit.dpro.events/daftar) tetap berfungsi.
+  async redirects() {
+    const ke = (k: "payung" | "trail" | "konser" | "mj", path = "") => siteBase(k) + path;
+    return [
+      { source: "/daftar", has: di("payung"), destination: ke("trail", "/daftar"), permanent: false },
+      { source: "/acara", has: di("payung"), destination: ke("trail", "/"), permanent: false },
+      { source: "/konser/:p*", has: di("payung"), destination: ke("konser", "/"), permanent: false },
+      { source: "/musical-journey/:p*", has: di("payung"), destination: ke("mj", "/"), permanent: false },
+      { source: "/acara", has: di("trail"), destination: "/", permanent: false },
+      { source: "/konser", has: di("konser"), destination: "/", permanent: false },
+      { source: "/konser/beli", has: di("konser"), destination: "/beli", permanent: false },
+      { source: "/musical-journey", has: di("mj"), destination: "/", permanent: false },
+      { source: "/musical-journey/beli", has: di("mj"), destination: "/beli", permanent: false },
+      ...(["konser", "mj"] as const).flatMap((k) => [
+        { source: "/daftar", has: di(k), destination: ke("trail", "/daftar"), permanent: false },
+        { source: "/gapura/:p*", has: di(k), destination: ke("payung", "/gapura/:p*"), permanent: false },
+      ]),
+      { source: "/gapura/:p*", has: di("trail"), destination: ke("payung", "/gapura/:p*"), permanent: false },
+    ];
   },
   async headers() {
     return [
@@ -65,7 +105,7 @@ const nextConfig: NextConfig = {
       { source: "/brand/:path*", headers: longCache },
       // Halaman 3D (adaptasi ThreeUI Kage): skrip inline, decoder Draco (WebAssembly) di worker blob.
       { source: "/spirit/:path*", headers: [{ key: "Content-Security-Policy", value: csp3d }] },
-      { source: "/", headers: [{ key: "Content-Security-Policy", value: csp3d }] },
+      { source: "/", has: di("payung"), headers: [{ key: "Content-Security-Policy", value: csp3d }] },
       { source: "/spirit/aset/:path*", headers: longCache },
       { source: "/texture/:path*", headers: longCache },
     ];

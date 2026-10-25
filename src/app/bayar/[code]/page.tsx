@@ -10,6 +10,7 @@ import { midtrans, paymentMode } from "@/lib/midtrans";
 import { guarded } from "@/lib/guard";
 import { itemLabel, loadRegistration, STATUS } from "@/lib/regs";
 import { getSettings } from "@/lib/settings";
+import { isEvent, SITES } from "@/lib/sites";
 
 export const dynamic = "force-dynamic";
 export const metadata = { title: "Pembayaran", robots: { index: false } };
@@ -28,11 +29,13 @@ export default async function Bayar({ params }: { params: Promise<{ code: string
     try { qris = await QRCode.toDataURL(dynamicQris(qrisPayload(), reg.total), { margin: 2, width: 720, errorCorrectionLevel: "M" }); }
     catch (e) { console.error("[qris] payload tidak valid:", (e as Error).message); }
   }
+  const ev = isEvent(reg.event) ? reg.event : "trail";
+  const trail = ev === "trail";
   const perKat = Object.values(reg.participants.reduce<Record<string, { n: string; q: number; h: number }>>((a, p) => { a[p.category] ??= { n: p.categoryName, q: 0, h: 0 }; a[p.category].q++; a[p.category].h += p.price; return a; }, {}));
   return (
-    <Shell cta={false} wa={false}>
+    <Shell cta={false} wa={false} site={ev}>
       <div className="pagehead">
-        <p className="eb">Pesanan {reg.code}</p>
+        <p className="eb">{SITES[ev].nama} · pesanan {reg.code}</p>
         <h1>{paid ? <>Pembayaran <span className="it">diterima.</span></> : <>Selesaikan <span className="it">pembayaran.</span></>}</h1>
         <p className="muted" style={{ marginTop: 10 }}>Atas nama {reg.buyerName} · {reg.buyerEmail}</p>
       </div>
@@ -47,13 +50,13 @@ export default async function Bayar({ params }: { params: Promise<{ code: string
             {reg.uniqueCode > 0 && <div className="sum"><span>Biaya admin <span className="muted small">(kode unik pencocokan)</span></span><b>{rupiah(reg.uniqueCode)}</b></div>}
             <div className="sum total"><span>Total</span><span>{rupiah(reg.total)}</span></div>
             <div style={{ marginTop: 14 }}>
-              <p className="eb">Pelari</p>
+              <p className="eb">{trail ? "Pelari" : "Pemegang tiket"}</p>
               {reg.participants.map((p) => (
-                <div key={p.id} className="sum"><span>{p.name} <span className="muted small">· {p.categoryName} · jersey {p.jersey}</span></span>
+                <div key={p.id} className="sum"><span>{p.name} <span className="muted small">· {p.categoryName}{trail ? ` · jersey ${p.jersey}` : ""}</span></span>
                   {paid ? <Link href={`/tiket/${p.ticketCode}`} style={{ color: "var(--batat)", fontWeight: 600 }}>E-ticket →</Link> : <span className="muted mono small">{p.ticketCode}</span>}</div>
               ))}
             </div>
-            {paid && reg.items.length > 0 && <p className="note" style={{ marginTop: 16 }}>Add on diambil bersama racepack, cukup tunjukkan e-ticket salah satu pelari di pesanan ini.</p>}
+            {paid && reg.items.length > 0 && <p className="note" style={{ marginTop: 16 }}>Add on diambil {trail ? "bersama racepack" : "di meja penukaran tiket"}, cukup tunjukkan salah satu e-ticket di pesanan ini.</p>}
           </div>
           {!paid && <BayarClient code={reg.code} status={reg.status} expiresAt={reg.expiresAt.toISOString()} mode={mode} qris={qris} snapJs={midtrans.snapJs} clientKey={midtrans.clientKey} rekening={s.rekening} total={reg.total} rejectReason={reg.rejectReason} />}
         </div>

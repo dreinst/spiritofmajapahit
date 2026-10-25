@@ -27,7 +27,7 @@ function csp(nonce: string) {
 export function proxy(req: NextRequest) {
   const p = req.nextUrl.pathname;
   // Beranda 3D memakai CSP sendiri dari next.config.ts (skrip inline dan WebAssembly decoder Draco).
-  if (p === "/") return NextResponse.next();
+  if (p === "/" && /^(majapahit\.dpro\.events|localhost|majapahit\.localhost)(:\d+)?$/.test(req.headers.get("host") ?? "")) return NextResponse.next();
   const nonce = btoa(crypto.randomUUID());
   const policy = csp(nonce);
   const reqHeaders = new Headers(req.headers);

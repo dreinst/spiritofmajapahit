@@ -28,12 +28,12 @@ export async function sendMail(to: string, subject: string, html: string) {
   }
 }
 
-export const mailLayout = (title: string, body: string) => `<!doctype html><html><body style="margin:0;background:#F4ECDF;font-family:Arial,sans-serif;color:#1A1210">
+export const mailLayout = (title: string, body: string, acara = "MAJAPAHIT TRAIL RUN 2027", tanggal = "Minggu, 27 Juni 2027") => `<!doctype html><html><body style="margin:0;background:#F4ECDF;font-family:Arial,sans-serif;color:#1A1210">
 <div style="max-width:560px;margin:0 auto;padding:32px 20px">
 <div style="background:#fff;border:1px solid #E3D5BF;border-radius:20px;padding:28px">
-<p style="margin:0;font-size:12px;letter-spacing:1px;color:#9C3A22;font-weight:bold">MAJAPAHIT TRAIL RUN 2027 · AONE TRAWAS</p>
+<p style="margin:0;font-size:12px;letter-spacing:1px;color:#9C3A22;font-weight:bold">${acara.toUpperCase()} · AONE TRAWAS</p>
 <h1 style="font-size:24px;margin:10px 0 16px">${title}</h1>${body}</div>
-<p style="font-size:12px;color:#6E6259;text-align:center;margin-top:16px">Minggu, 27 Juni 2027 · Kaki Gunung Penanggungan, Mojokerto<br>Made by dreinst | Organized by D'PRO</p></div></body></html>`;
+<p style="font-size:12px;color:#6E6259;text-align:center;margin-top:16px">${tanggal} · Aone Trawas, kaki Gunung Penanggungan, Mojokerto<br>The Spirit of Majapahit<br>Made by dreinst | Organized by D'PRO</p></div></body></html>`;
 
 export const button = (href: string, label: string) =>
   `<p style="margin:24px 0"><a href="${href}" style="background:#B4472B;color:#fff;text-decoration:none;padding:14px 24px;border-radius:999px;font-weight:bold;display:inline-block">${label}</a></p>`;

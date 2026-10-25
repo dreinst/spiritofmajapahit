@@ -11,6 +11,20 @@ export default async function Pengaturan({ searchParams }: { searchParams: Promi
   const kat = [...s.kategori, { ...kosong, jarak: "", elevasi: "", kuota: 0 }];
   const kamar = [...s.kamar, { ...kosong, tamu: 2 }];
   const merch = [...s.merch, { ...kosong, ukuran: false }, { ...kosong, ukuran: false }];
+  const kelas = (judul: string, prefix: string, list: typeof s.tiketKonser) => (
+    <div className="card" style={{ padding: 28 }}>
+      <h3 style={{ fontSize: 22 }}>{judul}</h3>
+      {[...list, { ...kosong, kuota: 0 }].map((t, i) => (
+        <div key={i} className="setrow" style={{ gridTemplateColumns: "1.4fr 1fr .7fr" }}>
+          <input type="hidden" name={`${prefix}Id`} value={t.id} />
+          {f(`Kelas ${i + 1}`, <input name={`${prefix}Nama`} className="input" defaultValue={t.nama} maxLength={40} />)}
+          {f("Harga (Rp)", <input name={`${prefix}Harga`} className="input" defaultValue={t.harga || ""} inputMode="numeric" />)}
+          {f("Kuota", <input name={`${prefix}Kuota`} className="input" defaultValue={t.kuota || ""} inputMode="numeric" />)}
+          {f("Keterangan", <input name={`${prefix}Ket`} className="input" defaultValue={t.ket} maxLength={200} />, { gridColumn: "1/-1" })}
+        </div>
+      ))}
+    </div>
+  );
   return (
     <>
       <p className="eb">Pengaturan · superadmin</p><h1 style={{ marginTop: 10 }}>Kategori, harga, <span className="it">add on.</span></h1>
@@ -25,7 +39,7 @@ export default async function Pengaturan({ searchParams }: { searchParams: Promi
         </div>
 
         <div className="card" style={{ padding: 28 }}>
-          <h3 style={{ fontSize: 22 }}>Kategori lomba</h3>
+          <h3 style={{ fontSize: 22 }}>Kategori Majapahit Trail Run</h3>
           {kat.map((k, i) => (
             <div key={i} className="setrow" style={{ gridTemplateColumns: "1.3fr .6fr .8fr 1fr .7fr" }}>
               <input type="hidden" name="katId" value={k.id} />
@@ -39,10 +53,15 @@ export default async function Pengaturan({ searchParams }: { searchParams: Promi
           ))}
         </div>
 
+        {kelas("Kelas tiket Konser Majapahit", "tk", s.tiketKonser)}
+        {kelas("Kelas tiket Musical Journey", "tm", s.tiketMj)}
+
         <div className="card" style={{ padding: 28 }}>
           <h3 style={{ fontSize: 22 }}>Kamar Aone Trawas</h3>
           <div className="grid2" style={{ gap: 12, marginTop: 12 }}>
-            {f("Tanggal check in", <input name="checkIn" className="input" defaultValue={s.checkIn} maxLength={60} />)}
+            {f("Check in Trail Run", <input name="checkIn" className="input" defaultValue={s.checkIn} maxLength={60} />)}
+            {f("Check in Konser Majapahit", <input name="checkInKonser" className="input" defaultValue={s.checkInKonser} maxLength={60} />)}
+            {f("Check in Musical Journey", <input name="checkInMj" className="input" defaultValue={s.checkInMj} maxLength={60} />)}
             {f("Maksimal malam per pesanan", <input name="maksMalam" className="input" defaultValue={s.maksMalam} inputMode="numeric" />)}
           </div>
           {kamar.map((k, i) => (

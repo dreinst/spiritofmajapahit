@@ -5,6 +5,7 @@ import { JERSEY } from "@/lib/event";
 import { rupiah } from "@/lib/format";
 import { STATUS } from "@/lib/regs";
 import { getSettings } from "@/lib/settings";
+import { EVENT_KEYS, SITES } from "@/lib/sites";
 
 // Baris: [label, nilai, teks angka, batas penuh]. Tanpa batas, panjang batang relatif terhadap nilai terbesar.
 function Bars({ rows, color }: { rows: [string, number, string?, number?][]; color?: string }) {
@@ -16,8 +17,8 @@ export default async function Ringkasan() {
   await requireAdmin(FINANCE);
   const [s, ps, regs, items] = await Promise.all([
     getSettings(),
-    prisma.participant.findMany({ include: { registration: { select: { status: true } } }, orderBy: { createdAt: "desc" } }),
-    prisma.registration.findMany({ select: { status: true, total: true, amountAddon: true } }),
+    prisma.participant.findMany({ include: { registration: { select: { status: true, event: true } } }, orderBy: { createdAt: "desc" } }),
+    prisma.registration.findMany({ select: { status: true, total: true, amountAddon: true, event: true } }),
     prisma.orderItem.findMany({ where: { registration: { status: "PAID" } } }),
   ]);
   const lunas = ps.filter((p) => p.registration.status === "PAID");
@@ -39,8 +40,12 @@ export default async function Ringkasan() {
         <div><span>Menunggu bayar</span><b>{ps.filter((p) => ["PENDING", "VERIFY"].includes(p.registration.status)).length}</b><small style={{ color: "var(--batat)" }}>{regs.filter((r) => r.status === "VERIFY").length} bukti perlu dicek</small></div>
         <div><span>Uang masuk</span><b style={{ fontSize: "clamp(26px,2.6vw,40px)", paddingTop: 10 }}>{rupiah(uang)}</b><small style={{ color: "var(--muted)" }}>Add on {rupiah(paid.reduce((a, r) => a + r.amountAddon, 0))}</small></div>
       </div>
+      <div className="card" style={{ marginTop: 20 }}><p className="eb">Per acara (lunas)</p>
+        <div className="grid3" style={{ marginTop: 10 }}>{EVENT_KEYS.map((e) => (
+          <div key={e}><b style={{ fontSize: 18 }}>{SITES[e].nama}</b><p className="muted small">{lunas.filter((p) => p.registration.event === e).length} peserta lunas · {rupiah(paid.filter((r) => r.event === e).reduce((a, r) => a + r.total, 0))}</p></div>
+        ))}</div></div>
       <div className="grid3" style={{ marginTop: 20 }}>
-        <div className="card"><p className="eb">Kategori (lunas / kuota)</p><div style={{ marginTop: 10 }}><Bars rows={s.kategori.map((k) => { const n = lunas.filter((p) => p.category === k.id).length; return [`${k.nama} ${k.jarak}`, n, `${n}/${k.kuota}`, k.kuota]; })} /></div></div>
+        <div className="card"><p className="eb">Kategori trail run (lunas / kuota)</p><div style={{ marginTop: 10 }}><Bars rows={s.kategori.map((k) => { const n = lunas.filter((p) => p.category === k.id).length; return [`${k.nama} ${k.jarak}`, n, `${n}/${k.kuota}`, k.kuota]; })} /></div></div>
         <div className="card"><p className="eb">Add on lunas</p><div style={{ marginTop: 10 }}><Bars color="var(--prada)" rows={[...kamar.map(([l, n]) => [`${l} (malam)`, n] as [string, number]), ...merch]} /></div>{items.length === 0 && <p className="muted small">Belum ada add on lunas.</p>}</div>
         <div className="card tablewrap"><p className="eb">Jersey pelari lunas</p><table style={{ marginTop: 6 }}><thead><tr><th>Ukuran</th><th>Jumlah</th></tr></thead>
           <tbody>{JERSEY.map((j) => { const a = lunas.filter((p) => p.jersey === j).length; return a ? <tr key={j}><td>{j}</td><td><b>{a}</b></td></tr> : null; })}</tbody></table>

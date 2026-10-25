@@ -3,11 +3,16 @@ import { prisma } from "@/lib/db";
 export type Kategori = { id: string; nama: string; jarak: string; elevasi: string; harga: number; kuota: number; ket: string };
 export type Kamar = { id: string; nama: string; harga: number; tamu: number; ket: string };
 export type Produk = { id: string; nama: string; harga: number; ukuran: boolean; ket: string };
+export type Tiket = { id: string; nama: string; harga: number; kuota: number; ket: string };
 export type Settings = {
   kategori: Kategori[];
   kamar: Kamar[];
   merch: Produk[];
+  tiketKonser: Tiket[];
+  tiketMj: Tiket[];
   checkIn: string;
+  checkInKonser: string;
+  checkInMj: string;
   maksMalam: number;
   jadwalDaftar: string;
   jadwalRacepack: string;
@@ -36,7 +41,20 @@ const DEFAULTS: Record<string, string> = {
     { id: "topi-trail", nama: "Topi trail", harga: 120000, ukuran: false, ket: "Topi ringan dengan bordir gapura." },
     { id: "botol", nama: "Botol minum lipat", harga: 95000, ukuran: false, ket: "Soft flask 500 ml untuk di lintasan." },
   ]),
+  // Kelas tiket Konser Majapahit dan Musical Journey: draf contoh, belum ada harga resmi.
+  tiketKonser: JSON.stringify([
+    { id: "konser-h1", nama: "Festival Hari 1", harga: 250000, kuota: 2000, ket: "Sabtu, 3 Juli 2027. Malam gala pertunjukan musik." },
+    { id: "konser-h2", nama: "Festival Hari 2", harga: 150000, kuota: 3000, ket: "Minggu, 4 Juli 2027. Pesta rakyat dengan orkestra dan UMKM warga." },
+    { id: "konser-terusan", nama: "Terusan 2 Hari", harga: 350000, kuota: 1000, ket: "Masuk di kedua hari." },
+    { id: "konser-vip", nama: "VIP 2 Hari", harga: 900000, kuota: 200, ket: "Area depan panggung dan jalur masuk khusus, kedua hari." },
+  ]),
+  tiketMj: JSON.stringify([
+    { id: "mj-reguler", nama: "Reguler", harga: 200000, kuota: 1500, ket: "Masuk area pertunjukan." },
+    { id: "mj-vip", nama: "VIP", harga: 600000, kuota: 150, ket: "Area depan dan jalur masuk khusus." },
+  ]),
   checkIn: "Sabtu, 26 Juni 2027",
+  checkInKonser: "Sabtu, 3 Juli 2027",
+  checkInMj: "Diumumkan bersama tanggal acara",
   maksMalam: "2",
   jadwalDaftar: "Segera diumumkan",
   jadwalRacepack: "Sabtu, 26 Juni 2027",
@@ -58,7 +76,11 @@ export async function getSettings(): Promise<Settings> {
     kategori: list<Kategori>(v.kategori, DEFAULTS.kategori),
     kamar: list<Kamar>(v.kamar, DEFAULTS.kamar),
     merch: list<Produk>(v.merch, DEFAULTS.merch),
+    tiketKonser: list<Tiket>(v.tiketKonser, DEFAULTS.tiketKonser),
+    tiketMj: list<Tiket>(v.tiketMj, DEFAULTS.tiketMj),
     checkIn: v.checkIn,
+    checkInKonser: v.checkInKonser,
+    checkInMj: v.checkInMj,
     maksMalam: Math.min(5, Math.max(1, Number(v.maksMalam) || 1)),
     jadwalDaftar: v.jadwalDaftar,
     jadwalRacepack: v.jadwalRacepack,
@@ -84,3 +106,12 @@ export async function terpakai() {
   });
   return Object.fromEntries(rows.map((r) => [r.category, r._count._all])) as Record<string, number>;
 }
+
+// Pilihan tiket per acara dalam satu bentuk: trail memakai kategori jarak, acara lain kelas tiket.
+export type Pilihan = { id: string; nama: string; label: string; harga: number; kuota: number; ket: string };
+export function pilihanAcara(s: Settings, event: string): Pilihan[] {
+  if (event === "konser") return s.tiketKonser.map((t) => ({ ...t, label: t.nama }));
+  if (event === "mj") return s.tiketMj.map((t) => ({ ...t, label: t.nama }));
+  return s.kategori.map((k) => ({ id: k.id, nama: k.nama, label: `${k.nama} ${k.jarak}`, harga: k.harga, kuota: k.kuota, ket: k.ket }));
+}
+export const checkInAcara = (s: Settings, event: string) => (event === "konser" ? s.checkInKonser : event === "mj" ? s.checkInMj : s.checkIn);
