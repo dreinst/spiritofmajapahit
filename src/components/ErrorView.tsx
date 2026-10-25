@@ -1,6 +1,7 @@
 import Link from "next/link";
 import Image from "next/image";
 import Icon, { WaIcon } from "@/components/Icon";
+import Ket from "@/components/Ket";
 import { waLink } from "@/lib/kontak";
 
 // Satu tampilan untuk 403, 404, dan 500 supaya pesan error tetap ramah dan tidak membocorkan detail teknis.
@@ -17,7 +18,7 @@ export default function ErrorView({ code, title, text, action }: { code: string;
           <a href={waLink("Saya menemukan kendala di website Majapahit Trail Run.")} target="_blank" rel="noopener" className="btn w"><WaIcon />Tanya panitia</a>
         </div>
       </div>
-      <div className="photo kala"><Image src="/foto/kala.webp" alt="Kepala kala di atas pintu gapura" fill sizes="(max-width: 900px) 90vw, 440px" /></div>
+      <figure><div className="photo kala"><Image src="/foto/kala-2.webp" alt="Ilustrasi kepala kala di atas pintu gapura" fill sizes="(max-width: 900px) 90vw, 440px" /></div><Ket src="/foto/kala-2.webp" /></figure>
     </div>
   );
 }

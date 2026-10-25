@@ -6,7 +6,7 @@ type Size = (typeof SIZE_CHART)[number]["size"];
 const fmt = (n: number) => String(n).replace(".", ",");
 
 // Pemilih ukuran jersey: tombol XS sampai 5XL, gambar kaos dengan angka ukuran terpilih, saran dari kaos
-// favorit, dan tabel lengkap. Tanpa onChange dipakai sebagai panduan saja (guide book).
+// acuan, dan tabel lengkap. Tanpa onChange dipakai sebagai panduan saja (guide book).
 export default function SizeChart({ value, onChange, table = true }: { value?: string; onChange?: (s: Size) => void; table?: boolean }) {
   const [own, setOwn] = useState<Size>("L");
   const cur = (value as Size) || own;
@@ -21,18 +21,18 @@ export default function SizeChart({ value, onChange, table = true }: { value?: s
         {SIZE_CHART.map((s) => <button type="button" key={s.size} role="radio" aria-checked={cur === s.size} className={`${cur === s.size ? "on" : ""} ${rec === s.size && cur !== s.size ? "rec" : ""}`} onClick={() => pick(s.size)}>{s.size}<small>{s.lebar}</small></button>)}
       </div>
       <div className="szgrid">
-        <svg viewBox="0 0 220 230" width="100%" aria-label={`Ilustrasi ukuran ${cur}`}>
-          <path d="M70 18 Q110 40 150 18 L198 44 L180 92 L160 84 L160 214 Q110 222 60 214 L60 84 L40 92 L22 44 Z" fill="#F3EADB" stroke="#1C1310" strokeWidth="2" strokeLinejoin="round" />
-          <path d="M84 22 Q110 38 136 22" fill="none" stroke="#1C1310" strokeWidth="2" />
-          <line x1="60" y1="110" x2="160" y2="110" stroke="#B4472B" strokeWidth="2" strokeDasharray="4 4" /><circle cx="60" cy="110" r="3.5" fill="#B4472B" /><circle cx="160" cy="110" r="3.5" fill="#B4472B" />
-          <rect x="80" y="96" width="60" height="26" rx="13" fill="#B4472B" /><text x="110" y="114" textAnchor="middle" fontWeight="700" fontSize="13" fill="#fff">{fmt(d.lebar)} cm</text>
-          <line x1="176" y1="40" x2="176" y2="214" stroke="#1C1310" strokeWidth="1.5" strokeDasharray="3 4" /><text x="186" y="112" fontWeight="700" fontSize="12" fill="#1C1310" transform="rotate(90 186 112)">{fmt(d.panjang)} cm</text>
+        <svg viewBox="0 0 220 230" width="100%" className="szsvg" aria-label={`Gambar ukuran ${cur}`}>
+          <path d="M70 18 Q110 40 150 18 L198 44 L180 92 L160 84 L160 214 Q110 222 60 214 L60 84 L40 92 L22 44 Z" className="kain" strokeWidth="2" strokeLinejoin="round" />
+          <path d="M84 22 Q110 38 136 22" className="garis" fill="none" strokeWidth="2" />
+          <line x1="60" y1="110" x2="160" y2="110" className="aksen-g" strokeWidth="2" strokeDasharray="4 4" /><circle cx="60" cy="110" r="3.5" className="aksen" /><circle cx="160" cy="110" r="3.5" className="aksen" />
+          <rect x="80" y="96" width="60" height="26" rx="13" className="aksen" /><text x="110" y="114" textAnchor="middle" fontWeight="700" fontSize="13" className="label">{fmt(d.lebar)} cm</text>
+          <line x1="176" y1="40" x2="176" y2="214" className="garis" strokeWidth="1.5" strokeDasharray="3 4" /><text x="186" y="112" fontWeight="700" fontSize="12" className="teks" transform="rotate(90 186 112)">{fmt(d.panjang)} cm</text>
         </svg>
         <div>
           <p className="eb">Ukuran {cur}</p>
           <div style={{ display: "grid", gridTemplateColumns: "minmax(0,1fr) minmax(0,1fr)", gap: 10, marginTop: 10 }}>
             {[["Lebar dada", d.lebar], ["Panjang badan", d.panjang], [`Lengan ${lengan}`, lengan === "pendek" ? d.lenganPendek : d.lenganPanjang], ["Lingkar kerah", d.kerah]].map(([l, v]) => (
-              <div key={l as string} style={{ background: "var(--bg)", borderRadius: 14, padding: 12 }}><p className="muted tiny">{l}</p><b className="disp" style={{ fontSize: 26 }}>{fmt(v as number)} <span style={{ fontSize: 13 }}>cm</span></b></div>
+              <div key={l as string} className="szbox"><p className="muted tiny">{l}</p><b className="disp" style={{ fontSize: 26 }}>{fmt(v as number)} <span style={{ fontSize: 13 }}>cm</span></b></div>
             ))}
           </div>
         </div>

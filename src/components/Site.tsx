@@ -29,7 +29,7 @@ export function Logo({ site = "trail" }: { site?: EventSite }) {
   const [a, b] = MENU[site].baris;
   return (
     <Link href="/" className="brand" aria-label={`Beranda ${SITES[site].nama}`}>
-      <span style={{ color: "var(--prada)", ["--surya-dalam" as string]: "var(--malam)" }}><Surya size={34} /></span>
+      <span style={{ color: "var(--gold)", ["--surya-dalam" as string]: "var(--bg)" }}><Surya size={30} /></span>
       <b>{a}<br />{b}<small>Aone Trawas 2027</small></b>
     </Link>
   );
@@ -49,7 +49,7 @@ export function Nav({ testMode, cta = true, over = false, site = "trail" }: { te
   }, [over]);
   return (
     <>
-      {testMode && <div className="testbar">Mode uji: {site === "trail" ? "kategori" : "kelas tiket"}, harga, dan kuota masih contoh, pembayaran masih simulasi</div>}
+      {testMode && <div className="testbar">Mode uji: {site === "trail" ? "kategori" : "kelas tiket"}, harga, dan kuota masih contoh. Pembayaran masih simulasi.</div>}
       <Rangkaian site={site} />
       <header className={`nav${over ? " over" : ""}${solid ? " solid" : ""}`}>
         <Logo site={site} />
@@ -67,7 +67,7 @@ export function Nav({ testMode, cta = true, over = false, site = "trail" }: { te
             {[["/", "Beranda"] as [string, string], ...LINKS, ["/cek-tiket", "Cek tiket"] as [string, string]].map(([h, l]) => (
               <Link key={h} href={h} onClick={() => setOpen(false)}>{l}</Link>
             ))}
-            <Link href={ctaHref} className="btn r lg" style={{ marginTop: 16 }} onClick={() => setOpen(false)}>{ctaLabel}</Link>
+            <Link href={ctaHref} className="btn r lg" style={{ marginTop: 18 }} onClick={() => setOpen(false)}>{ctaLabel}</Link>
             <p className="eb" style={{ marginTop: 18 }}>Rangkaian</p>
             {(["payung", "trail", "konser", "mj"] as SiteKey[]).filter((k) => k !== site).map((k) => <a key={k} href={siteBase(k)}>{SITES[k].nama}</a>)}
             <a href={waLink()} target="_blank" rel="noopener" className="btn wa lg" style={{ marginTop: 8 }}><WaIcon />Tanya panitia</a>
@@ -88,11 +88,11 @@ export function Footer({ site = "trail" }: { site?: EventSite }) {
     <footer className="foot">
       <div className="top">
         <div>
-          <p className="big">{a}<br />{b} <span className="it pr">2027</span></p>
-          <p style={{ marginTop: 14, maxWidth: 360 }}>{S.tanggal} di {S.venue}, kaki Gunung Penanggungan, Mojokerto. Bagian dari rangkaian The Spirit of Majapahit.</p>
+          <p className="big">{a}<br />{b} <span className="it">2027</span></p>
+          <p style={{ marginTop: 14, maxWidth: 360 }}>{S.venue}, kaki Gunung Penanggungan, Mojokerto. {S.tanggal}. Bagian dari rangkaian The Spirit of Majapahit.</p>
         </div>
         <div><h4>Rangkaian</h4>{(["payung", "trail", "konser", "mj"] as SiteKey[]).map((k) => <a key={k} href={siteBase(k)}>{SITES[k].nama}</a>)}</div>
-        <div><h4>{site === "trail" ? "Peserta" : "Pengunjung"}</h4><Link href={ctaHref}>{ctaLabel}</Link><Link href="/cek-tiket">Cek tiket</Link><Link href="/#faq">Tanya jawab</Link></div>
+        <div><h4>{site === "trail" ? "Peserta" : "Pengunjung"}</h4><Link href={ctaHref}>{ctaLabel}</Link><Link href="/cek-tiket">Cek tiket</Link><Link href="/#faq">Tanya jawab</Link><a href={`${siteBase("payung")}/sumber-aset`}>Sumber aset</a></div>
         <div><h4>Kontak</h4><a href={waLink()} target="_blank" rel="noopener" className="ic"><WaIcon size={16} />WhatsApp</a><a href={mailLink()} title={EMAIL}>{EMAIL}</a></div>
       </div>
       <div className="bot">
@@ -103,12 +103,7 @@ export function Footer({ site = "trail" }: { site?: EventSite }) {
           <span className="ic" style={{ gap: 8 }}>Organized by <img src="/brand/logo-dpro-ringkas.svg?v=2" alt="D'PRO" width={79} height={16} /></span>
         </span>
       </div>
-      <p className="aset">
-        Visual gapura dari model 3D buatan sendiri, memakai aset berlisensi CC BY:{" "}
-        <a href="https://sketchfab.com/3d-models/arca-dwarapala-fe8803efbc0043d7bc3114387c4c1545" target="_blank" rel="noopener noreferrer">Arca Dwarapala oleh pixforge.id</a> dan{" "}
-        <a href="https://sketchfab.com/3d-models/suryamajapahitlow-810542c2619a4bdeb65b54b78e2c249d" target="_blank" rel="noopener noreferrer">Suryamajapahitlow oleh jokodirgantara</a>{" "}
-        (<a href="https://creativecommons.org/licenses/by/4.0/" target="_blank" rel="noopener noreferrer">CC BY 4.0</a>), serta pohon jacaranda dari Poly Haven (CC0).
-      </p>
+      <p className="aset">Gambar gapura, kala, dan pendopo di situs ini adalah ilustrasi 3D, bukan foto situs asli. Daftar sumber dan lisensinya ada di halaman <a href={`${siteBase("payung")}/sumber-aset`}>Sumber aset</a>.</p>
     </footer>
   );
 }

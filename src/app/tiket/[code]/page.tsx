@@ -32,7 +32,7 @@ export default async function Tiket({ params }: { params: Promise<{ code: string
         <p className="muted" style={{ marginTop: 10 }}>Tunjukkan QR ini {trail ? "saat mengambil racepack" : "di pintu masuk"} ya. Salinan e-ticket sudah kami kirim ke {p.email}.</p>
         <div className="ticket" style={{ marginTop: 30 }}>
           <div style={{ padding: "clamp(22px,3vw,36px)" }}>
-            <div className="between" style={{ alignItems: "center" }}><span className="row" style={{ color: "var(--bata)" }}><Surya size={30} /><b className="disp" style={{ fontSize: 24, color: "var(--ink)" }}>{S.nama} 2027</b></span><span className="pill k">{p.categoryName}</span></div>
+            <div className="between" style={{ alignItems: "center" }}><span className="row" style={{ color: "var(--gold, var(--bata))", ["--surya-dalam" as string]: "var(--surface)" }}><Surya size={30} /><b className="disp" style={{ fontSize: 24, color: "var(--ink)" }}>{S.nama} 2027</b></span><span className="pill k">{p.categoryName}</span></div>
             <div className="kv" style={{ marginTop: 28 }}>
               <div><p className="eb">Nama</p><b>{p.name}</b></div>
               <div><p className="eb">{trail ? "Kategori" : "Kelas tiket"}</p><b>{p.categoryName}</b></div>
@@ -49,7 +49,7 @@ export default async function Tiket({ params }: { params: Promise<{ code: string
             <div className="row" style={{ marginTop: 26 }}>{trail ? <>{cp("Racepack", p.racepackAt)}{cp("Start", p.startAt)}{cp("Finish", p.finishAt)}</> : cp("Masuk", p.startAt)}</div>
           </div>
           <div className="stub">
-            <p className="eb" style={{ color: "#F3D9B0" }}>Scan di sini</p>
+            <p className="eb">Pindai di sini</p>
             <div className="qr"><img src={qr} alt={`QR e-ticket ${p.ticketCode}`} width={200} height={200} /></div>
             <p className="mono" style={{ fontSize: 16, letterSpacing: 3 }}>{p.ticketCode}</p>
             <PrintButton />

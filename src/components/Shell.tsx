@@ -3,13 +3,13 @@ import { Footer, Nav, WaFloat, type EventSite } from "@/components/Site";
 // Kerangka halaman publik: navbar, isi, footer, dan tombol WhatsApp melayang.
 export default function Shell({ children, cta = true, wa = true, over = false, site = "trail" }: { children: React.ReactNode; cta?: boolean; wa?: boolean; over?: boolean; site?: EventSite }) {
   return (
-    <>
+    <div className={`lux s-${site}`}>
       {/* Halaman statis dirender saat build, saat QRIS_STATIC_PAYLOAD belum ada, jadi cukup baca PAYMENT_MODE. */}
       <Nav testMode={!["manual", "midtrans"].includes(process.env.PAYMENT_MODE ?? "")} cta={cta} over={over} site={site} />
       <main>{children}</main>
       <Footer site={site} />
       {wa && <WaFloat />}
-    </>
+    </div>
   );
 }
 
