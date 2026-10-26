@@ -9,9 +9,9 @@ export const GAMBAR: Gambar[] = [
   { id: "pintu-paduraksa", path: "/spirit/aset/generated/kage-lantern-court.webp?v=9", judul: "Ilustrasi Lorong Paduraksa" },
   { id: "kala", path: "/foto/kala-3.webp", judul: "Ilustrasi Kala" },
   { id: "pendopo", path: "/spirit/aset/generated/kage-moonwater.webp?v=9", judul: "Ilustrasi Pendopo" },
-  { id: "medali-depan", path: "/foto/medali-penataran/depan.webp", judul: "Ilustrasi medali finisher" },
-  { id: "medali-candi", path: "/foto/medali-penataran/buka.webp", judul: "Ilustrasi medali terlipat dengan panel candi berdiri" },
-  { id: "medali-detail", path: "/foto/medali-penataran/urai.webp", judul: "Ilustrasi medali: animasi lipat, close-up relief dan sendi, koleksi empat tahun, dan tampilan urai" },
+  { id: "medali-depan", path: "/foto/medali-menara/depan.webp", judul: "Ilustrasi medali finisher" },
+  { id: "medali-candi", path: "/foto/medali-menara/buka.webp", judul: "Ilustrasi medali terlipat dengan panel candi berdiri" },
+  { id: "medali-detail", path: "/foto/medali-menara/urai.webp", judul: "Ilustrasi medali: animasi lipat, close-up relief dan sendi, koleksi empat tahun, dan tampilan urai" },
 ];
 
 export const gambar = (path: string) => GAMBAR.find((a) => a.path === path);

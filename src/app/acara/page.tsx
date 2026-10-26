@@ -101,15 +101,15 @@ export default async function Home() {
             <div data-rv>
               <div className="tumpuk">
                 <div className="cahaya" />
-                <Image src="/foto/medali-penataran/depan.webp" alt="Ilustrasi medali finisher Majapahit Trail Run 2027 dalam keadaan tertutup" width={1000} height={1001} className="depan" sizes="(max-width: 900px) 70vw, 36vw" />
-                <Image src="/foto/medali-penataran/buka.webp" alt="Ilustrasi medali yang dilipat, panel relief Candi Penataran berdiri di atas tulisan MAJAPAHIT" width={1000} height={1185} className="candi" sizes="(max-width: 900px) 50vw, 26vw" />
+                <Image src="/foto/medali-menara/depan.webp" alt="Ilustrasi medali finisher Majapahit Trail Run 2027 dalam keadaan tertutup" width={1000} height={1001} className="depan" sizes="(max-width: 900px) 70vw, 36vw" />
+                <Image src="/foto/medali-menara/buka.webp" alt="Ilustrasi medali yang dilipat, panel relief Candi Penataran berdiri di ujung sempit alas" width={1000} height={1185} className="candi" sizes="(max-width: 900px) 50vw, 26vw" />
               </div>
-              <Ket src="/foto/medali-penataran/depan.webp" />
+              <Ket src="/foto/medali-menara/depan.webp" />
             </div>
             <div data-rv style={{ ["--d" as string]: 1 }}>
               <p className="eb">Medali finisher</p>
               <h2 style={{ marginTop: 18 }}>Medali yang berubah jadi <span className="it">candi.</span></h2>
-              <p className="muted" style={{ fontSize: 16, marginTop: 20, maxWidth: 500, lineHeight: 1.7 }}>Medali segi enam ini bisa dilipat. Putar bagian atasnya ke belakang, dan panel relief Candi Penataran berdiri tegak di atas tulisan MAJAPAHIT. Medali dari garis finis berubah jadi miniatur candi untuk dipajang.</p>
+              <p className="muted" style={{ fontSize: 16, marginTop: 20, maxWidth: 500, lineHeight: 1.7 }}>Medali segi enam ini bisa dilipat. Putar bagian atasnya ke belakang, lalu tegakkan panel relief Candi Penataran di ujung sempitnya. Medali dari garis finis berubah jadi miniatur candi untuk dipajang.</p>
               <div className="fitur">
                 <div><b>84 mm</b><p>Lebar medali segi enam</p></div>
                 <div><b>90°</b><p>Panel candi berdiri saat medali dilipat</p></div>
