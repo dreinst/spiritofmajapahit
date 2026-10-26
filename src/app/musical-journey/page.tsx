@@ -9,7 +9,7 @@ const K: Konten = {
   event: "mj",
   judul: ["Musical", "Journey"],
   lead: "Perjalanan musik bertema Majapahit di Aone Trawas, kaki Gunung Penanggungan. Tanggal dan penampil diumumkan bertahap.",
-  gambar: "/spirit/aset/generated/kage-sanmon-preview.webp?v=4",
+  gambar: "/spirit/aset/generated/kage-sanmon-preview.webp?v=9",
   tentangJudul: ["Musik yang", "bercerita."],
   tentang: [
     "Musical Journey adalah pertunjukan musik bertema Majapahit di Aone Trawas. Konsep lengkapnya diumumkan bertahap.",

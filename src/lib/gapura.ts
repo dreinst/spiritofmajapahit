@@ -13,8 +13,8 @@ export const ELEMEN: Elemen[] = [
     nama: "Candi Bentar",
     sebutan: "Gerbang terbelah",
     ringkas: "Gerbang berbentuk candi yang dibelah dua, tanpa atap penghubung, menandai batas halaman luar sebuah kompleks.",
-    gambar: "/spirit/aset/generated/kage-approach.webp?v=4",
-    gambar2: "/foto/gapura-pagi-2.webp",
+    gambar: "/spirit/aset/generated/kage-approach.webp?v=9",
+    gambar2: "/foto/gapura-pagi-3.webp",
     fakta: [["15,5 m", "Tinggi Wringin Lawang"], ["3,5 m", "Lebar celah tengah"], ["13 × 11 m", "Denah dasar"], ["Abad 14", "Masa Majapahit"]],
     bagian: [
       { judul: "Fungsi", isi: ["Candi bentar menandai batas halaman paling luar sebuah kompleks. Orang masuk lewat celah di tengahnya, lalu menuju gerbang beratap (paduraksa) yang membatasi halaman yang lebih suci."] },
@@ -35,9 +35,9 @@ export const ELEMEN: Elemen[] = [
     nama: "Kala",
     sebutan: "Penjaga gerbang",
     ringkas: "Wajah raksasa bermata melotot dan bertaring yang dipahat di atas pintu gapura, dipercaya menolak roh jahat.",
-    gambar: "/foto/kala-2.webp",
+    gambar: "/foto/kala-3.webp",
     fokus: "center 64%",
-    gambar2: "/spirit/aset/generated/kage-lantern-court.webp?v=4",
+    gambar2: "/spirit/aset/generated/kage-lantern-court.webp?v=9",
     fakta: [["16,5 m", "Tinggi Bajang Ratu"], ["Banaspati", "Sebutan di Jawa Timur"], ["Di atas pintu", "Letaknya"], ["Abad 14", "Masa Majapahit"]],
     bagian: [
       { judul: "Asal-usul", isi: ["Kala berakar dari tradisi Kirtimukha di India. Kisahnya, wajah raksasa ini lahir dari amarah Siwa. Di Jawa Timur kala juga disebut Banaspati."] },
@@ -58,7 +58,7 @@ export const ELEMEN: Elemen[] = [
     nama: "Pendopo",
     sebutan: "Balai terbuka",
     ringkas: "Bangunan beratap tanpa dinding yang berdiri di atas tiang, tempat berkumpul, bermusyawarah, dan menerima tamu.",
-    gambar: "/spirit/aset/generated/kage-moonwater.webp?v=4",
+    gambar: "/spirit/aset/generated/kage-moonwater.webp?v=9",
     fakta: [["26", "Umpak Pendopo Agung"], ["16", "Umpak penopang pendopo"], ["Segi enam", "Bentuk umpak"], ["Trowulan", "Lokasi temuan"]],
     bagian: [
       { judul: "Jejaknya di Trowulan", isi: [

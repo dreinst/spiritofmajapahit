@@ -4,7 +4,7 @@ import { useEffect, useRef, useState } from "react";
 // Penampil medali lipat: 24 render Blender dari rata sampai terlipat dengan panel candi berdiri. Bergerak bolak-balik sendiri,
 // berhenti saat digeser. Pengguna yang memilih kurangi gerak langsung melihat posisi terbuka.
 const N = 24;
-const src = (k: number) => `/foto/medali-lipat/f${String(k).padStart(2, "0")}.webp`;
+const src = (k: number) => `/foto/medali-penataran/f${String(k).padStart(2, "0")}.webp`;
 
 export default function MedaliPutar() {
   const [i, setI] = useState(0);

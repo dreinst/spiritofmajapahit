@@ -3,7 +3,7 @@ import { Surya } from "@/components/Brand";
 import { Rangkaian } from "@/components/Site";
 import { siteBase } from "@/lib/sites";
 
-// Kerangka halaman situs payung selain beranda 3D (halaman warisan dan sumber aset).
+// Kerangka halaman situs payung selain beranda 3D (halaman warisan).
 export default function Payung({ children, back = ["/#pathways", "Kembali ke galeri"] }: { children: React.ReactNode; back?: [string, string] }) {
   const home = siteBase("payung");
   return (
@@ -16,7 +16,7 @@ export default function Payung({ children, back = ["/#pathways", "Kembali ke gal
       <main>{children}</main>
       <footer className="gp-foot">
         <span>© 2027 The Spirit of Majapahit · Made by dreinst · Organized by D&apos;PRO</span>
-        <span>Gambar gapura, kala, dan pendopo adalah ilustrasi 3D, bukan foto situs asli. <a href={`${home}/sumber-aset`}>Sumber aset</a></span>
+        <span>Gambar gapura, kala, dan pendopo adalah ilustrasi 3D, bukan foto situs asli.</span>
       </footer>
     </div>
   );

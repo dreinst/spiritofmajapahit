@@ -519,7 +519,7 @@ html:has(.lux),html:has(.lux) body{background:#F2EAE3}
 .lux .errpage .code{font-family:var(--f-disp),serif;color:var(--gold2);letter-spacing:-.04em}
 .lux .errpage .kala{border-radius:2px}
 
-/* situs payung: halaman warisan dan sumber aset */
+/* situs payung: halaman warisan */
 .gp-hero{position:relative;height:min(82vh,820px);overflow:hidden;isolation:isolate}
 .gp-hero>img{object-fit:cover;object-position:center 38%;z-index:-1}
 .gp-hero::after{content:"";position:absolute;inset:0;z-index:-1;background:linear-gradient(180deg,rgba(24,14,16,.3) 0%,rgba(24,14,16,.05) 35%,rgba(242,234,227,.7) 78%,var(--bg) 98%)}

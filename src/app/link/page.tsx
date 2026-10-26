@@ -26,7 +26,7 @@ export default function Tautan() {
     <div className="lux lk">
       <main className="lk-in">
         <section className="lk-sampul">
-          <Image src="/spirit/aset/generated/kage-approach.webp?v=4" alt="Ilustrasi candi bentar pada malam hari" fill priority sizes="(max-width: 600px) 100vw, 560px" className="bg" />
+          <Image src="/spirit/aset/generated/kage-approach.webp?v=9" alt="Ilustrasi candi bentar pada malam hari" fill priority sizes="(max-width: 600px) 100vw, 560px" className="bg" />
           <Kelopak n={9} />
           <div className="lk-sampul-in">
             <span style={{ color: "#E59A82", ["--surya-dalam" as string]: "#221A1F" }}><Surya size={40} /></span>
@@ -47,7 +47,7 @@ export default function Tautan() {
           </div>
           <a href={waLink("Halo panitia The Spirit of Majapahit, saya ingin bertanya.")} target="_blank" rel="noopener" className="lk-btn wa"><span><b>Tanya panitia lewat WhatsApp</b><small>{WA_TAMPIL}</small></span><WaIcon /></a>
         </div>
-        <p className="lk-kaki">© 2027 The Spirit of Majapahit · Organized by D&apos;PRO · <a href={`${p}/sumber-aset`}>Sumber aset</a></p>
+        <p className="lk-kaki">© 2027 The Spirit of Majapahit · Organized by D&apos;PRO</p>
       </main>
     </div>
   );

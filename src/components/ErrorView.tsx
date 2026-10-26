@@ -18,7 +18,7 @@ export default function ErrorView({ code, title, text, action }: { code: string;
           <a href={waLink("Saya menemukan kendala di website Majapahit Trail Run.")} target="_blank" rel="noopener" className="btn w"><WaIcon />Tanya panitia</a>
         </div>
       </div>
-      <figure><div className="photo kala"><Image src="/foto/kala-2.webp" alt="Ilustrasi kepala kala di atas pintu gapura" fill sizes="(max-width: 900px) 90vw, 440px" /></div><Ket src="/foto/kala-2.webp" /></figure>
+      <figure><div className="photo kala"><Image src="/foto/kala-3.webp" alt="Ilustrasi kepala kala di atas pintu gapura" fill sizes="(max-width: 900px) 90vw, 440px" /></div><Ket src="/foto/kala-3.webp" /></figure>
     </div>
   );
 }

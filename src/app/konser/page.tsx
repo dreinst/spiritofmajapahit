@@ -8,7 +8,7 @@ const K: Konten = {
   event: "konser",
   judul: ["Konser Majapahit", "2027"],
   lead: "Dua hari musik dan budaya bertema Majapahit di Aone Trawas, Sabtu sampai Minggu, 3 sampai 4 Juli 2027.",
-  gambar: "/spirit/aset/generated/kage-moonwater.webp?v=4",
+  gambar: "/spirit/aset/generated/kage-moonwater.webp?v=9",
   hariH: "2027-07-03T18:00:00+07:00",
   hitungLabel: "Menuju hari pertama",
   tentangJudul: ["Malam gala dan", "pesta rakyat."],

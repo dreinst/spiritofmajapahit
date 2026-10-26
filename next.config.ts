@@ -59,7 +59,7 @@ const nextConfig: NextConfig = {
   poweredByHeader: false,
   // Traefik di VPS yang mengompres (brotli).
   compress: false,
-  images: { localPatterns: [{ pathname: "/**", search: "" }, { pathname: "/spirit/aset/**", search: "?v=4" }], formats: ["image/avif", "image/webp"], qualities: [70, 75], minimumCacheTTL: 2592000, deviceSizes: [390, 640, 828, 1080, 1440, 1920], imageSizes: [64, 128, 256, 384] },
+  images: { localPatterns: [{ pathname: "/**", search: "" }, { pathname: "/spirit/aset/**", search: "?v=9" }], formats: ["image/avif", "image/webp"], qualities: [70, 75], minimumCacheTTL: 2592000, deviceSizes: [390, 640, 828, 1080, 1440, 1920], imageSizes: [64, 128, 256, 384] },
   experimental: { serverActions: { bodySizeLimit: "1mb" } },
   // Beranda tiap domain: payung = halaman 3D statis (public/spirit/index.html), trail = /acara,
   // konser = /konser, musical journey = /musical-journey. /beli menuju formulir tiket acaranya.
@@ -79,6 +79,7 @@ const nextConfig: NextConfig = {
   async redirects() {
     const ke = (k: "payung" | "trail" | "konser" | "mj", path = "") => siteBase(k) + path;
     return [
+      { source: "/sumber-aset", destination: "/", permanent: false },
       { source: "/daftar", has: di("payung"), destination: ke("trail", "/daftar"), permanent: false },
       { source: "/acara", has: di("payung"), destination: ke("trail", "/"), permanent: false },
       { source: "/konser/:p*", has: di("payung"), destination: ke("konser", "/"), permanent: false },

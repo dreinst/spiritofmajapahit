@@ -16,7 +16,7 @@ import Kelopak from "@/components/Kelopak";
 export const dynamic = "force-dynamic";
 export const metadata = { title: { absolute: "Majapahit Trail Run 2027 · Aone Trawas" }, description: "Majapahit Trail Run, Minggu 27 Juni 2027 di Aone Trawas, kaki Gunung Penanggungan, Mojokerto. Kategori dan harga, lintasan, medali, add on, jadwal, dan tanya jawab." };
 
-const HERO = "/spirit/aset/generated/kage-approach.webp?v=4";
+const HERO = "/spirit/aset/generated/kage-approach.webp?v=9";
 
 export default async function Home() {
   const [s, used] = await Promise.all([getSettings(), terpakai()]);
@@ -101,10 +101,10 @@ export default async function Home() {
             <div data-rv>
               <div className="tumpuk">
                 <div className="cahaya" />
-                <Image src="/foto/medali-lipat/depan.webp" alt="Ilustrasi medali finisher Majapahit Trail Run 2027 dalam keadaan tertutup" width={1000} height={1001} className="depan" sizes="(max-width: 900px) 70vw, 36vw" />
-                <Image src="/foto/medali-lipat/buka.webp" alt="Ilustrasi medali yang dilipat, panel relief Candi Penataran berdiri di atas tulisan MAJAPAHIT" width={1000} height={1185} className="candi" sizes="(max-width: 900px) 50vw, 26vw" />
+                <Image src="/foto/medali-penataran/depan.webp" alt="Ilustrasi medali finisher Majapahit Trail Run 2027 dalam keadaan tertutup" width={1000} height={1001} className="depan" sizes="(max-width: 900px) 70vw, 36vw" />
+                <Image src="/foto/medali-penataran/buka.webp" alt="Ilustrasi medali yang dilipat, panel relief Candi Penataran berdiri di atas tulisan MAJAPAHIT" width={1000} height={1185} className="candi" sizes="(max-width: 900px) 50vw, 26vw" />
               </div>
-              <Ket src="/foto/medali-lipat/depan.webp" />
+              <Ket src="/foto/medali-penataran/depan.webp" />
             </div>
             <div data-rv style={{ ["--d" as string]: 1 }}>
               <p className="eb">Medali finisher</p>
@@ -161,8 +161,8 @@ export default async function Home() {
         <p className="eb rel">{EVENT.tanggal} · {EVENT.venue}</p>
         <h2 data-rv style={{ marginTop: 20 }}>Sampai jumpa<br />di <span className="it">Trawas.</span></h2>
         <div className="row rel" style={{ justifyContent: "center", marginTop: 34 }}><Link href="/daftar" className="btn r lg">Daftar sekarang <Icon name="arrow" size={18} /></Link><Link href="/cek-tiket" className="btn g lg">Cek tiket</Link></div>
-        <Image src="/foto/paduraksa-2.webp" alt="Ilustrasi gapura paduraksa dengan arca dwarapala" width={1200} height={1500} className="padu" sizes="(max-width: 900px) 80vw, 560px" />
-        <Ket src="/foto/paduraksa-2.webp" className="rel" />
+        <Image src="/foto/paduraksa-3.webp" alt="Ilustrasi gapura paduraksa dengan sepasang miniatur candi" width={1200} height={1500} className="padu" sizes="(max-width: 900px) 80vw, 560px" />
+        <Ket src="/foto/paduraksa-3.webp" className="rel" />
       </section>
     </Shell>
   );

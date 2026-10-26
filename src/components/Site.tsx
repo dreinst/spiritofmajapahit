@@ -92,7 +92,7 @@ export function Footer({ site = "trail" }: { site?: EventSite }) {
           <p style={{ marginTop: 14, maxWidth: 360 }}>{S.venue}, kaki Gunung Penanggungan, Mojokerto. {S.tanggal}. Bagian dari rangkaian The Spirit of Majapahit.</p>
         </div>
         <div><h4>Rangkaian</h4>{(["payung", "trail", "konser", "mj"] as SiteKey[]).map((k) => <a key={k} href={siteBase(k)}>{SITES[k].nama}</a>)}</div>
-        <div><h4>{site === "trail" ? "Peserta" : "Pengunjung"}</h4><Link href={ctaHref}>{ctaLabel}</Link><Link href="/cek-tiket">Cek tiket</Link><Link href="/#faq">Tanya jawab</Link><a href={`${siteBase("payung")}/sumber-aset`}>Sumber aset</a></div>
+        <div><h4>{site === "trail" ? "Peserta" : "Pengunjung"}</h4><Link href={ctaHref}>{ctaLabel}</Link><Link href="/cek-tiket">Cek tiket</Link><Link href="/#faq">Tanya jawab</Link></div>
         <div><h4>Kontak</h4><a href={waLink()} target="_blank" rel="noopener" className="ic"><WaIcon size={16} />WhatsApp</a><a href={mailLink()} title={EMAIL}>{EMAIL}</a></div>
       </div>
       <div className="bot">
@@ -103,7 +103,7 @@ export function Footer({ site = "trail" }: { site?: EventSite }) {
           <span className="ic" style={{ gap: 8 }}>Organized by <img src="/brand/logo-dpro-ringkas.svg?v=2" alt="D'PRO" width={79} height={16} /></span>
         </span>
       </div>
-      <p className="aset">Gambar gapura, kala, dan pendopo di situs ini adalah ilustrasi 3D, bukan foto situs asli. Daftar sumber dan lisensinya ada di halaman <a href={`${siteBase("payung")}/sumber-aset`}>Sumber aset</a>.</p>
+      <p className="aset">Gambar gapura, kala, dan pendopo di situs ini adalah ilustrasi 3D, bukan foto situs asli.</p>
     </footer>
   );
 }

@@ -35,8 +35,9 @@ Email terkirim lewat SMTP (`SMTP_HOST`, `SMTP_USER`, `SMTP_PASS`, `SMTP_FROM`). 
 ## Aset visual
 
 - Gapura (candi bentar dan paduraksa) dirender dari model Blender sendiri, `~/Downloads/Spirit of Majapahit/3D/Spirit of Majapahit v3.blend`, dengan cahaya fajar dan latar transparan. Langit, matahari, dan siluet Penanggungan digambar sebagai SVG/CSS di `src/components/Brand.tsx`.
-- Model itu memakai dua aset CC BY 4.0 yang kreditnya tampil di footer: [Arca Dwarapala oleh pixforge.id](https://sketchfab.com/3d-models/arca-dwarapala-fe8803efbc0043d7bc3114387c4c1545) dan [Suryamajapahitlow oleh jokodirgantara](https://sketchfab.com/3d-models/suryamajapahitlow-810542c2619a4bdeb65b54b78e2c249d), plus pohon jacaranda dari Poly Haven (CC0).
-- Foto medali diambil dari konsep desain medali D'PRO ("Interactive Medal Design Concept", 20 Okt 2026).
+- Arca dwarapala dan Surya Majapahit 3D di model itu dimodel sendiri. Peta lintasan memakai ilustrasi medan buatan sendiri.
+- Gambar medali dirender dari model 3D medali lipat D'PRO yang dibuat dari konsep "Interactive Medal Design Concept".
+- Beranda 3D memakai mesin adegan ThreeUI Kage (MIT); teks lisensinya ada di `licenses/THREEUI-LICENSE` dan sebagai komentar di `public/spirit/index.html`.
 
 ## Aturan commit
 

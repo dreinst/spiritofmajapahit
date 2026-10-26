@@ -19,7 +19,7 @@ export const metadata: Metadata = {
   metadataBase: new URL(site),
   title: { default: "Majapahit Trail Run 2027 · Aone Trawas", template: "%s · Majapahit Trail Run 2027" },
   description: desc,
-  openGraph: { title: "Majapahit Trail Run 2027", description: desc, images: ["/foto/gapura-pagi-2.webp"], locale: "id_ID", type: "website" },
+  openGraph: { title: "Majapahit Trail Run 2027", description: desc, images: ["/foto/gapura-pagi-3.webp"], locale: "id_ID", type: "website" },
   robots: process.env.SITE_NOINDEX === "1" ? { index: false, follow: false } : undefined,
 };
 
