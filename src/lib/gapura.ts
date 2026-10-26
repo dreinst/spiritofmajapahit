@@ -59,6 +59,7 @@ export const ELEMEN: Elemen[] = [
     sebutan: "Balai terbuka",
     ringkas: "Bangunan beratap tanpa dinding yang berdiri di atas tiang, tempat berkumpul, bermusyawarah, dan menerima tamu.",
     gambar: "/spirit/aset/generated/kage-moonwater.webp?v=9",
+    gambar2: "/foto/pendopo-pagi.webp",
     fakta: [["26", "Umpak Pendopo Agung"], ["16", "Umpak penopang pendopo"], ["Segi enam", "Bentuk umpak"], ["Trowulan", "Lokasi temuan"]],
     bagian: [
       { judul: "Jejaknya di Trowulan", isi: [
