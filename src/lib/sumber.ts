@@ -14,8 +14,10 @@ export const GAMBAR: Aset[] = [
   { id: "pintu-paduraksa", path: "/spirit/aset/generated/kage-lantern-court.webp?v=4", judul: "Ilustrasi Lorong Paduraksa", sumber: MODEL, lisensi: "Milik D'PRO", ket: BUKAN_FOTO },
   { id: "kala", path: "/foto/kala-2.webp", judul: "Ilustrasi Kala", sumber: MODEL, lisensi: "Milik D'PRO", ket: `${BUKAN_FOTO} Relief bata dipahat ulang dengan acuan foto kala gerbang Trowulan dan Gapura Bajang Ratu.` },
   { id: "pendopo", path: "/spirit/aset/generated/kage-moonwater.webp?v=4", judul: "Ilustrasi Pendopo", sumber: MODEL, lisensi: "Milik D'PRO", ket: `${BUKAN_FOTO} Bentuk atap dan detail kayunya tafsir modern.` },
-  { id: "medali-depan", path: "/foto/medali-depan-2027.webp", judul: "Ilustrasi medali finisher tertutup", sumber: "Draf medali pop-up dibuat di Blender oleh tim D'PRO (Medali Popup 3D (draf).blend). Relief gapura dan candi bentar diambil dari peta kedalaman model 3D The Spirit of Majapahit. Gagasan medali yang bisa dibuka berasal dari konsep Interactive Medal Design Concept D'PRO (23 Oktober 2026).", lisensi: "Milik D'PRO", ket: "Draf desain, bukan foto produk. Mekanisme dan ukuran final menunggu sampel vendor." },
-  { id: "medali-candi", path: "/foto/medali-candi-2027.webp", judul: "Ilustrasi medali pop-up terbuka", sumber: "Draf medali pop-up dibuat di Blender oleh tim D'PRO (Medali Popup 3D (draf).blend). Huruf Cinzel dan Cinzel Decorative (Google Fonts), cahaya studio dari HDRI Studio Small 09 (Poly Haven).", lisensi: "Milik D'PRO", ket: "Ilustrasi desain, bukan foto produk." },
+  { id: "medali-depan", path: "/foto/medali-lipat/depan.webp", judul: "Ilustrasi medali finisher", sumber: "Model 3D medali lipat dibuat di Blender oleh tim D'PRO. Relief dan warnanya diambil dari konsep Interactive Medal Design Concept D'PRO, dengan tulisan TRAIL RUN dan tahun 2027 memakai huruf Montserrat. Cahaya studio dari HDRI Studio Small 09 (Poly Haven).", lisensi: "Milik D'PRO", ket: "Draf desain, bukan foto produk. Mekanisme dan ukuran final menunggu sampel vendor." },
+  { id: "medali-candi", path: "/foto/medali-lipat/buka.webp", judul: "Ilustrasi medali terlipat dengan panel candi berdiri", sumber: "Model 3D medali lipat dibuat di Blender oleh tim D'PRO dari konsep Interactive Medal Design Concept D'PRO.", lisensi: "Milik D'PRO", ket: "Ilustrasi desain, bukan foto produk." },
+  { id: "medali-detail", path: "/foto/medali-lipat/urai.webp", judul: "Ilustrasi medali: animasi lipat, close-up relief dan sendi, koleksi empat tahun, dan tampilan urai", sumber: "Render Blender dari model 3D medali lipat oleh tim D'PRO. Animasi lipat berupa 24 gambar render.", lisensi: "Milik D'PRO", ket: "Draf desain, bukan foto produk." },
+  { id: "peta-satelit", path: "/foto/peta-satelit.webp", judul: "Peta lintasan di atas citra satelit", sumber: "Citra Sentinel-2 cloudless 2016 oleh EOX IT Services (berisi data Copernicus Sentinel 2016 yang diolah), bayangan relief dari Terrain Tiles (data ketinggian SRTM), posisi Aone Trawas dan puncak Penanggungan dari OpenStreetMap. Jalur kategori digambar tim D'PRO sebagai ilustrasi.", url: "https://s2maps.eu", lisensi: "CC BY 4.0 (citra), ODbL (OpenStreetMap)", ket: "Jalur masih ilustrasi. Rute resmi diumumkan setelah survei jalur." },
 ];
 
 // Aset pihak ketiga di dalam model 3D. Tekstur material dari render ulang ditambahkan ke TEKSTUR.
@@ -44,7 +46,7 @@ export const GRAFIS: Aset[] = [
 export const FONT: Aset[] = [
   { id: "bodoni", judul: "Bodoni Moda", sumber: "Google Fonts", url: "https://fonts.google.com/specimen/Bodoni+Moda", lisensi: "SIL Open Font License" },
   { id: "jakarta", judul: "Plus Jakarta Sans", sumber: "Google Fonts", url: "https://fonts.google.com/specimen/Plus+Jakarta+Sans", lisensi: "SIL Open Font License" },
-  { id: "cinzel", judul: "Cinzel dan Cinzel Decorative (huruf di medali)", sumber: "Google Fonts", url: "https://fonts.google.com/specimen/Cinzel", lisensi: "SIL Open Font License" },
+  { id: "montserrat", judul: "Montserrat (huruf TRAIL RUN dan tahun di medali)", sumber: "Google Fonts", url: "https://fonts.google.com/specimen/Montserrat", lisensi: "SIL Open Font License" },
   { id: "geist-mono", judul: "Geist Mono", sumber: "Google Fonts", url: "https://fonts.google.com/specimen/Geist+Mono", lisensi: "SIL Open Font License" },
 ];
 

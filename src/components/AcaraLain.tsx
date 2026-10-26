@@ -9,6 +9,7 @@ import { rupiah } from "@/lib/format";
 import { checkInAcara, getSettings, pilihanAcara, terpakai } from "@/lib/settings";
 import { siteBase, SITES } from "@/lib/sites";
 import { WA_TAMPIL, waLink } from "@/lib/kontak";
+import Kelopak from "@/components/Kelopak";
 
 export type Konten = {
   event: "konser" | "mj";
@@ -37,6 +38,7 @@ export default async function AcaraLain({ k }: { k: Konten }) {
   return (
     <Shell site={k.event}>
       <section className="lhero">
+        <Kelopak />
         <Image src={k.gambar} alt="" fill priority sizes="100vw" className="bg" />
         <Ket src={k.gambar} className="pojok" />
         <div className="isi">
@@ -111,6 +113,7 @@ export default async function AcaraLain({ k }: { k: Konten }) {
       </section>
 
       <section className="final">
+        <Kelopak n={10} />
         <p className="eb rel">{S.tanggal} · {S.venue}</p>
         <h2 data-rv style={{ marginTop: 20 }}>Sampai jumpa<br />di <span className="it">Trawas.</span></h2>
         <div className="row rel" style={{ justifyContent: "center", marginTop: 34, paddingBottom: 130 }}><Link href="/beli" className="btn r lg">Beli tiket <Icon name="arrow" size={18} /></Link><Link href="/cek-tiket" className="btn g lg">Cek tiket</Link></div>

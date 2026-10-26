@@ -93,6 +93,8 @@ const nextConfig: NextConfig = {
         { source: "/gapura/:p*", has: di(k), destination: ke("payung", "/gapura/:p*"), permanent: false },
       ]),
       { source: "/gapura/:p*", has: di("trail"), destination: ke("payung", "/gapura/:p*"), permanent: false },
+      ...(["payung", "konser", "mj"] as const).map((k) => ({ source: "/medali", has: di(k), destination: ke("trail", "/medali"), permanent: false })),
+      ...(["trail", "konser", "mj"] as const).map((k) => ({ source: "/link", has: di(k), destination: ke("payung", "/link"), permanent: false })),
     ];
   },
   async headers() {

@@ -11,6 +11,7 @@ import { EVENT } from "@/lib/event";
 import { rupiah } from "@/lib/format";
 import { getSettings, terpakai } from "@/lib/settings";
 import { WA_TAMPIL, waLink } from "@/lib/kontak";
+import Kelopak from "@/components/Kelopak";
 
 export const dynamic = "force-dynamic";
 export const metadata = { title: { absolute: "Majapahit Trail Run 2027 · Aone Trawas" }, description: "Majapahit Trail Run, Minggu 27 Juni 2027 di Aone Trawas, kaki Gunung Penanggungan, Mojokerto. Kategori dan harga, lintasan, medali, add on, jadwal, dan tanya jawab." };
@@ -38,6 +39,7 @@ export default async function Home() {
   return (
     <Shell>
       <section className="lhero">
+        <Kelopak />
         <Image src={HERO} alt="Ilustrasi candi bentar pada malam hari" fill priority sizes="100vw" className="bg" />
         <Ket src={HERO} className="pojok" />
         <div className="isi">
@@ -99,19 +101,20 @@ export default async function Home() {
             <div data-rv>
               <div className="tumpuk">
                 <div className="cahaya" />
-                <Image src="/foto/medali-depan-2027.webp" alt="Ilustrasi medali finisher Majapahit Trail Run 2027 dalam keadaan tertutup" width={1000} height={1001} className="depan" sizes="(max-width: 900px) 70vw, 36vw" />
-                <Image src="/foto/medali-candi-2027.webp" alt="Ilustrasi medali yang dibuka, lapisan gunung, candi bentar, dan gapura berdiri seperti buku pop-up" width={1000} height={1006} className="candi" sizes="(max-width: 900px) 50vw, 26vw" />
+                <Image src="/foto/medali-lipat/depan.webp" alt="Ilustrasi medali finisher Majapahit Trail Run 2027 dalam keadaan tertutup" width={1000} height={1001} className="depan" sizes="(max-width: 900px) 70vw, 36vw" />
+                <Image src="/foto/medali-lipat/buka.webp" alt="Ilustrasi medali yang dilipat, panel relief Candi Penataran berdiri di atas tulisan MAJAPAHIT" width={1000} height={1185} className="candi" sizes="(max-width: 900px) 50vw, 26vw" />
               </div>
-              <Ket src="/foto/medali-depan-2027.webp" />
+              <Ket src="/foto/medali-lipat/depan.webp" />
             </div>
             <div data-rv style={{ ["--d" as string]: 1 }}>
               <p className="eb">Medali finisher</p>
-              <h2 style={{ marginTop: 18 }}>Medali yang terbuka seperti <span className="it">buku pop-up.</span></h2>
-              <p className="muted" style={{ fontSize: 16, marginTop: 20, maxWidth: 500, lineHeight: 1.7 }}>Tutup medali segi enam ini bisa dibuka. Saat diangkat, tiga lapisan di dalamnya ikut berdiri: Gunung Penanggungan di belakang, sepasang candi bentar, lalu gapura paduraksa di depan. Sisi dalam tutup menjadi langit malam dengan matahari Surya Majapahit.</p>
+              <h2 style={{ marginTop: 18 }}>Medali yang berubah jadi <span className="it">candi.</span></h2>
+              <p className="muted" style={{ fontSize: 16, marginTop: 20, maxWidth: 500, lineHeight: 1.7 }}>Medali segi enam ini bisa dilipat. Putar bagian atasnya ke belakang, dan panel relief Candi Penataran berdiri tegak di atas tulisan MAJAPAHIT. Medali dari garis finis berubah jadi miniatur candi untuk dipajang.</p>
               <div className="fitur">
-                <div><b>90 mm</b><p>Lebar medali segi enam</p></div>
-                <div><b>3</b><p>Lapisan pop-up yang berdiri saat tutup dibuka</p></div>
+                <div><b>84 mm</b><p>Lebar medali segi enam</p></div>
+                <div><b>90°</b><p>Panel candi berdiri saat medali dilipat</p></div>
               </div>
+              <Link href="/medali" className="btn w" style={{ marginTop: 28 }}>Lihat detail medali <Icon name="arrow" size={16} /></Link>
             </div>
           </div>
           <div className="jersey">
@@ -154,6 +157,7 @@ export default async function Home() {
       </section>
 
       <section className="final">
+        <Kelopak n={10} />
         <p className="eb rel">{EVENT.tanggal} · {EVENT.venue}</p>
         <h2 data-rv style={{ marginTop: 20 }}>Sampai jumpa<br />di <span className="it">Trawas.</span></h2>
         <div className="row rel" style={{ justifyContent: "center", marginTop: 34 }}><Link href="/daftar" className="btn r lg">Daftar sekarang <Icon name="arrow" size={18} /></Link><Link href="/cek-tiket" className="btn g lg">Cek tiket</Link></div>

@@ -22,31 +22,39 @@ export function Surya({ size = 28, className }: { size?: number; className?: str
 }
 
 // Warna tiap kategori: dipakai di kartu kategori, garis rute di peta, dan legenda.
-export const WARNA_RUTE = ["#C9A45C", "#B86A4C", "#5A8F85"];
+export const WARNA_RUTE = ["#E2A63B", "#D9503B", "#4FB8A6"];
 
-// Peta ilustrasi lintasan di kaki Penanggungan. Rute final diumumkan setelah survei jalur,
-// jadi garis di sini hanya gambaran arah tiap kategori dari titik start di Aone Trawas.
+// Peta lintasan di atas citra satelit Sentinel-2 cloudless 2016 (EOX, CC BY 4.0) dengan bayangan relief dari
+// Terrain Tiles (SRTM). Posisi Aone Trawas dan puncak Penanggungan mengikuti koordinat OpenStreetMap; jalur tiap
+// kategori masih ilustrasi dengan panjang yang diukur pada skala peta, rute resmi diumumkan setelah survei.
 const RUTE = [
-  { d: "M300 520 C360 470 430 460 470 420 C520 370 600 380 640 420 C680 460 640 520 580 540 C500 566 380 580 300 520Z", len: 1100 },
-  { d: "M300 520 C330 430 420 360 520 330 C620 300 720 320 780 280 C840 240 900 260 920 320 C940 390 860 460 760 500 C640 548 420 600 300 520Z", len: 1700 },
-  { d: "M300 520 C280 400 360 280 470 230 C580 180 640 140 720 150 C800 160 860 210 900 180 C960 140 1040 150 1060 220 C1080 300 1000 360 940 420 C860 500 720 560 580 570 C460 578 350 570 300 520Z", len: 2400 },
+  { d: "M442 567 C444 549 469 521 490 507 C512 493 554 476 573 482 C592 487 608 519 605 539 C602 559 575 590 554 603 C533 615 496 621 478 615 C459 609 440 585 442 567Z", len: 472 },
+  { d: "M442 567 C420 539 451 472 474 432 C497 392 544 353 579 327 C613 302 654 273 683 279 C712 284 747 327 753 362 C758 397 742 448 718 488 C693 527 652 586 606 599 C560 612 464 595 442 567Z", len: 1010 },
+  { d: "M442 567 C418 536 394 486 392 442 C390 398 407 346 429 303 C451 259 492 215 525 180 C558 144 600 110 627 89 C655 67 667 52 690 51 C713 50 738 59 766 83 C794 107 837 150 857 196 C878 241 896 305 889 356 C882 407 854 458 814 501 C775 543 700 592 654 613 C607 634 571 637 536 629 C501 621 466 598 442 567Z", len: 1677 },
 ];
+const AIR: [number, number][] = [[605, 539], [615, 302], [889, 356]];
+const MEDIS: [number, number][] = [[739, 445], [429, 303]];
+const TEKS = { fontFamily: "sans-serif", paintOrder: "stroke" as const };
 export function PetaLintasan() {
-  const kontur = [0, 1, 2, 3, 4, 5, 6, 7].map((i) => <ellipse key={i} cx="820" cy="190" rx={90 + i * 62} ry={58 + i * 44} fill="none" stroke="#C9A45C" strokeOpacity={0.26 - i * 0.025} strokeWidth="1" />);
   return (
-    <svg viewBox="0 0 1200 680" role="img" aria-label="Peta ilustrasi lintasan di kaki Gunung Penanggungan">
-      <rect width="1200" height="680" fill="#13100E" />
-      {kontur}
-      <path d="M0 610 C200 590 360 640 560 620 C760 600 980 640 1200 610" fill="none" stroke="#35505A" strokeWidth="8" strokeLinecap="round" opacity=".8" />
-      <g fill="#24302A" opacity=".9">{[[150, 200], [190, 240], [120, 300], [1050, 470], [1100, 420], [1010, 520], [420, 130], [470, 100]].map(([x, y]) => <circle key={`${x}${y}`} cx={x} cy={y} r="26" />)}</g>
-      <path d="M760 160 L820 112 L880 168Z" fill="none" stroke="#E6CF9C" strokeWidth="1.5" />
-      <text x="820" y="92" textAnchor="middle" fontSize="13" letterSpacing="2" fill="#E6CF9C" fontFamily="sans-serif">G. PENANGGUNGAN</text>
-      {RUTE.map((r, i) => <path key={r.len} className="jalur" d={r.d} fill="none" stroke={WARNA_RUTE[i]} strokeWidth="3.5" strokeLinecap="round" strokeLinejoin="round" style={{ ["--len" as string]: r.len, ["--d" as string]: i }} />)}
-      {[[470, 420, "A"], [780, 280, "A"], [900, 180, "A"], [640, 420, "+"], [920, 320, "+"]].map(([x, y, t]) => (
-        <g key={`${x}${y}`}><circle cx={x as number} cy={y as number} r="13" fill="#0D0B0A" stroke="#E6CF9C" strokeWidth="1.5" /><text x={x as number} y={(y as number) + 5} textAnchor="middle" fontSize="13" fontWeight="700" fill="#E6CF9C" fontFamily="sans-serif">{t}</text></g>
-      ))}
-      <g transform="translate(300 520)"><circle r="20" fill="#F2ECE2" /><path d="M-6 -8 L8 0 L-6 8Z" fill="#0D0B0A" /></g>
-      <text x="300" y="584" textAnchor="middle" fontSize="13" letterSpacing="2" fill="#F2ECE2" fontFamily="sans-serif">AONE TRAWAS</text>
+    <svg viewBox="0 0 1200 694" role="img" aria-label="Peta lintasan di atas citra satelit kaki Gunung Penanggungan">
+      <defs>
+        <linearGradient id="peta-vignet" x1="0" y1="0" x2="0" y2="1"><stop offset="0" stopColor="#000" stopOpacity=".25" /><stop offset=".3" stopColor="#000" stopOpacity="0" /><stop offset=".82" stopColor="#000" stopOpacity="0" /><stop offset="1" stopColor="#000" stopOpacity=".35" /></linearGradient>
+      </defs>
+      <image href="/foto/peta-satelit.webp" x="0" y="0" width="1200" height="694" preserveAspectRatio="xMidYMid slice" />
+      <rect width="1200" height="694" fill="url(#peta-vignet)" />
+      {RUTE.map((r) => <path key={"b" + r.len} d={r.d} fill="none" stroke="#120A08" strokeOpacity=".5" strokeWidth="8" strokeLinecap="round" strokeLinejoin="round" />)}
+      {RUTE.map((r, i) => <path key={r.len} className="jalur" d={r.d} fill="none" stroke={WARNA_RUTE[i]} strokeWidth="3.6" strokeLinecap="round" strokeLinejoin="round" style={{ ["--len" as string]: r.len, ["--d" as string]: i }} />)}
+      {AIR.map(([x, y]) => <g key={`a${x}${y}`}><circle cx={x} cy={y} r="12" fill="#FFF6EF" stroke="#2A1A18" strokeOpacity=".4" /><text x={x} y={y + 4.5} textAnchor="middle" fontSize="12" fontWeight="700" fill="#2A1A18" style={TEKS}>A</text></g>)}
+      {MEDIS.map(([x, y]) => <g key={`m${x}${y}`}><circle cx={x} cy={y} r="12" fill="#FFF6EF" stroke="#2A1A18" strokeOpacity=".4" /><text x={x} y={y + 5} textAnchor="middle" fontSize="15" fontWeight="700" fill="#A33A2C" style={TEKS}>+</text></g>)}
+      <path d="M663 80 L674 61 L685 80Z" fill="#FFF6EF" stroke="#2A1A18" strokeOpacity=".5" />
+      <text x="694" y="77" fontSize="13" letterSpacing="1.5" fontWeight="600" fill="#FFF6EF" stroke="#120A08" strokeOpacity=".55" strokeWidth="3" style={TEKS}>G. PENANGGUNGAN · 1.653 MDPL</text>
+      <g transform="translate(442 567)"><circle r="17" fill="#A33A2C" stroke="#FFF6EF" strokeWidth="2.5" /><path d="M-5 -7 L8 0 L-5 7Z" fill="#FFF6EF" /></g>
+      <text x="442" y="605" textAnchor="middle" fontSize="13" letterSpacing="1.5" fontWeight="600" fill="#FFF6EF" stroke="#120A08" strokeOpacity=".55" strokeWidth="3" style={TEKS}>AONE TRAWAS</text>
+      <g transform="translate(1150 50)" fill="#FFF6EF"><path d="M0 -20 L8 6 L0 0 L-8 6Z" /><text y="24" textAnchor="middle" fontSize="12" fontWeight="700" style={TEKS}>U</text></g>
+      <g transform="translate(36 652)"><rect width="66" height="5" fill="#FFF6EF" /><rect x="33" width="33" height="5" fill="#2A1A18" fillOpacity=".6" /><text y="-8" fontSize="11" fill="#FFF6EF" style={TEKS}>1 km</text></g>
+      <text x="1186" y="684" textAnchor="end" fontSize="10" fill="#FFF6EF" fillOpacity=".85" style={TEKS}>Citra: Sentinel-2 cloudless 2016 oleh EOX (CC BY 4.0), relief SRTM</text>
     </svg>
   );
 }
+
